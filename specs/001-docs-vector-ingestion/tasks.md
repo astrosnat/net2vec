@@ -30,13 +30,13 @@ implementation and testing of each story.
 **Purpose**: Initialize the Python project, dependency metadata, quality gates,
 and package skeleton.
 
-- [ ] T001 Create Python package directories and `__init__.py` files under `src/net2vec/api`, `src/net2vec/cli`, `src/net2vec/config`, `src/net2vec/domain`, `src/net2vec/ingestion`, `src/net2vec/embeddings`, `src/net2vec/persistence`, `src/net2vec/search`, and `src/net2vec/mcp`
-- [ ] T002 Create test directories `tests/unit`, `tests/contract`, and `tests/integration` with package markers where needed
-- [ ] T003 Create `pyproject.toml` with Python 3.12 metadata and dependencies FastAPI, Uvicorn, Typer, Pydantic, SQLAlchemy 2.x, Alembic, psycopg, pgvector, OpenAI, BeautifulSoup4, lxml, httpx, MCP Python SDK, pytest, ruff, and lizard
-- [ ] T004 Configure ruff and pytest options in `pyproject.toml`
-- [ ] T005 Configure lizard complexity gate command in `pyproject.toml` or `scripts/check-complexity.ps1`
-- [ ] T006 [P] Create `.env.example` documenting `DATABASE_URL`, `OPENAI_API_KEY`, `NET2VEC_EMBEDDING_MODEL`, `NET2VEC_API_HOST`, `NET2VEC_API_PORT`, and `NET2VEC_MCP_URL`
-- [ ] T007 [P] Update `README.md` with local setup commands and links to `specs/001-docs-vector-ingestion/quickstart.md`
+- [X] T001 Create Python package directories and `__init__.py` files under `src/net2vec/api`, `src/net2vec/cli`, `src/net2vec/config`, `src/net2vec/domain`, `src/net2vec/ingestion`, `src/net2vec/embeddings`, `src/net2vec/persistence`, `src/net2vec/search`, and `src/net2vec/mcp`
+- [X] T002 Create test directories `tests/unit`, `tests/contract`, and `tests/integration` with package markers where needed
+- [X] T003 Create `pyproject.toml` with Python 3.12 metadata and dependencies FastAPI, Uvicorn, Typer, Pydantic, SQLAlchemy 2.x, Alembic, psycopg, pgvector, OpenAI, BeautifulSoup4, lxml, httpx, MCP Python SDK, pytest, ruff, and lizard
+- [X] T004 Configure ruff and pytest options in `pyproject.toml`
+- [X] T005 Configure lizard complexity gate command in `pyproject.toml` or `scripts/check-complexity.ps1`
+- [X] T006 [P] Create `.env.example` documenting `DATABASE_URL`, `OPENAI_API_KEY`, `NET2VEC_EMBEDDING_MODEL`, `NET2VEC_API_HOST`, `NET2VEC_API_PORT`, and `NET2VEC_MCP_URL`
+- [X] T007 [P] Update `README.md` with local setup commands and links to `specs/001-docs-vector-ingestion/quickstart.md`
 
 ---
 
@@ -47,18 +47,18 @@ that MUST be complete before any user story implementation.
 
 **CRITICAL**: No user story work can begin until this phase is complete.
 
-- [ ] T008 Implement settings loading in `src/net2vec/config/settings.py`
-- [ ] T009 Create domain models for `SourceDocument`, `DocumentSection`, `SearchQuery`, and `SearchResult` in `src/net2vec/domain/documents.py`, `src/net2vec/domain/chunks.py`, and `src/net2vec/domain/search.py`
-- [ ] T010 Implement database engine/session setup in `src/net2vec/persistence/database.py`
-- [ ] T011 Create SQLAlchemy persistence models with pgvector fields in `src/net2vec/persistence/models.py`
-- [ ] T012 Create initial Alembic environment and migration enabling pgvector in `src/net2vec/persistence/migrations`
-- [ ] T013 Implement repository interfaces and SQLAlchemy repository stubs in `src/net2vec/persistence/repositories.py`
-- [ ] T014 [P] Implement shared error types and result objects in `src/net2vec/domain/documents.py` and `src/net2vec/domain/search.py`
-- [ ] T015 [P] Implement embedding client interface and OpenAI embedding adapter skeleton in `src/net2vec/embeddings/client.py`
-- [ ] T016 [P] Implement API application factory and health route in `src/net2vec/api/app.py`
-- [ ] T017 [P] Implement Typer CLI root wiring in `src/net2vec/cli/__init__.py`
-- [ ] T018 [P] Implement MCP server bootstrap skeleton in `src/net2vec/mcp/server.py`
-- [ ] T019 Verify SOLID boundaries and no business rules in adapters across `src/net2vec/api`, `src/net2vec/cli`, and `src/net2vec/mcp`
+- [X] T008 Implement settings loading in `src/net2vec/config/settings.py`
+- [X] T009 Create domain models for `SourceDocument`, `DocumentSection`, `SearchQuery`, and `SearchResult` in `src/net2vec/domain/documents.py`, `src/net2vec/domain/chunks.py`, and `src/net2vec/domain/search.py`
+- [X] T010 Implement database engine/session setup in `src/net2vec/persistence/database.py`
+- [X] T011 Create SQLAlchemy persistence models with pgvector fields in `src/net2vec/persistence/models.py`
+- [X] T012 Create initial Alembic environment and migration enabling pgvector in `src/net2vec/persistence/migrations`
+- [X] T013 Implement repository interfaces and SQLAlchemy repository stubs in `src/net2vec/persistence/repositories.py`
+- [X] T014 [P] Implement shared error types and result objects in `src/net2vec/domain/documents.py` and `src/net2vec/domain/search.py`
+- [X] T015 [P] Implement embedding client interface and OpenAI embedding adapter skeleton in `src/net2vec/embeddings/client.py`
+- [X] T016 [P] Implement API application factory and health route in `src/net2vec/api/app.py`
+- [X] T017 [P] Implement Typer CLI root wiring in `src/net2vec/cli/__init__.py`
+- [X] T018 [P] Implement MCP server bootstrap skeleton in `src/net2vec/mcp/server.py`
+- [X] T019 Verify SOLID boundaries and no business rules in adapters across `src/net2vec/api`, `src/net2vec/cli`, and `src/net2vec/mcp`
 
 **Checkpoint**: Foundation ready. Database schema, settings, domain models, and
 adapter skeletons exist; user story work can begin.
@@ -76,26 +76,26 @@ structure, searchable chunks, and replacement-on-refresh behavior.
 
 ### Tests for User Story 1
 
-- [ ] T020 [P] [US1] Add unit tests for exact URL validation and no-crawl behavior in `tests/unit/test_ingest_url_policy.py`
-- [ ] T021 [P] [US1] Add unit tests for boilerplate removal and title extraction in `tests/unit/test_extractor.py`
-- [ ] T022 [P] [US1] Add unit tests for heading-aware chunk creation and no-heading fallback in `tests/unit/test_chunker.py`
-- [ ] T023 [P] [US1] Add unit tests for embedding batching and model dimension validation in `tests/unit/test_embedding_service.py`
-- [ ] T024 [P] [US1] Add repository tests for one-active-version refresh semantics in `tests/unit/test_repositories.py`
-- [ ] T025 [US1] Add integration test for first ingest and refresh replacement flow in `tests/integration/test_ingest_refresh_flow.py`
+- [X] T020 [P] [US1] Add unit tests for exact URL validation and no-crawl behavior in `tests/unit/test_ingest_url_policy.py`
+- [X] T021 [P] [US1] Add unit tests for boilerplate removal and title extraction in `tests/unit/test_extractor.py`
+- [X] T022 [P] [US1] Add unit tests for heading-aware chunk creation and no-heading fallback in `tests/unit/test_chunker.py`
+- [X] T023 [P] [US1] Add unit tests for embedding batching and model dimension validation in `tests/unit/test_embedding_service.py`
+- [X] T024 [P] [US1] Add repository tests for one-active-version refresh semantics in `tests/unit/test_repositories.py`
+- [X] T025 [US1] Add integration test for first ingest and refresh replacement flow in `tests/integration/test_ingest_refresh_flow.py`
 
 ### Implementation for User Story 1
 
-- [ ] T026 [US1] Implement exact HTTP/HTTPS URL validation in `src/net2vec/ingestion/fetcher.py`
-- [ ] T027 [US1] Implement single-page HTTP fetching with timeout, redirect limit, and unsupported-content errors in `src/net2vec/ingestion/fetcher.py`
-- [ ] T028 [US1] Implement HTML content extraction, title extraction, and boilerplate cleanup in `src/net2vec/ingestion/extractor.py`
-- [ ] T029 [US1] Implement heading-aware section traversal and fallback heading path behavior in `src/net2vec/ingestion/chunker.py`
-- [ ] T030 [US1] Implement excerpt creation, token counting, source order, and chunk hashing in `src/net2vec/ingestion/chunker.py`
-- [ ] T031 [US1] Implement OpenAI embedding generation service with configured model and dimension checks in `src/net2vec/embeddings/service.py`
-- [ ] T032 [US1] Implement repository method to replace active chunks for a source URL transactionally in `src/net2vec/persistence/repositories.py`
-- [ ] T033 [US1] Implement ingestion orchestration pipeline in `src/net2vec/ingestion/pipeline.py`
-- [ ] T034 [US1] Implement CLI command `python -m net2vec.cli.ingest <url>` in `src/net2vec/cli/ingest.py`
-- [ ] T035 [US1] Add structured ingestion logs without leaking secrets in `src/net2vec/ingestion/pipeline.py`
-- [ ] T036 [US1] Verify US1 functions stay below cyclomatic complexity 4 with `lizard -C 3 src/net2vec/ingestion src/net2vec/embeddings src/net2vec/persistence tests`
+- [X] T026 [US1] Implement exact HTTP/HTTPS URL validation in `src/net2vec/ingestion/fetcher.py`
+- [X] T027 [US1] Implement single-page HTTP fetching with timeout, redirect limit, and unsupported-content errors in `src/net2vec/ingestion/fetcher.py`
+- [X] T028 [US1] Implement HTML content extraction, title extraction, and boilerplate cleanup in `src/net2vec/ingestion/extractor.py`
+- [X] T029 [US1] Implement heading-aware section traversal and fallback heading path behavior in `src/net2vec/ingestion/chunker.py`
+- [X] T030 [US1] Implement excerpt creation, token counting, source order, and chunk hashing in `src/net2vec/ingestion/chunker.py`
+- [X] T031 [US1] Implement OpenAI embedding generation service with configured model and dimension checks in `src/net2vec/embeddings/service.py`
+- [X] T032 [US1] Implement repository method to replace active chunks for a source URL transactionally in `src/net2vec/persistence/repositories.py`
+- [X] T033 [US1] Implement ingestion orchestration pipeline in `src/net2vec/ingestion/pipeline.py`
+- [X] T034 [US1] Implement CLI command `python -m net2vec.cli.ingest <url>` in `src/net2vec/cli/ingest.py`
+- [X] T035 [US1] Add structured ingestion logs without leaking secrets in `src/net2vec/ingestion/pipeline.py`
+- [X] T036 [US1] Verify US1 functions stay below cyclomatic complexity 4 with `lizard -C 3 src/net2vec/ingestion src/net2vec/embeddings src/net2vec/persistence tests`
 
 **Checkpoint**: User Story 1 is independently functional and testable as the MVP.
 
