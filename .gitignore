@@ -1,6 +1,6 @@
 # Agent stuff
-.agents/
-.specify/
+agents/
+specify/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
