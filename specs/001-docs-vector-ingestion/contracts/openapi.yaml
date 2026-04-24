@@ -1,0 +1,176 @@
+openapi: 3.1.0
+info:
+  title: net2vec Documentation Search API
+  version: 0.1.0
+  description: Local/internal API for ingesting exact documentation URLs and searching active chunks.
+servers:
+  - url: http://127.0.0.1:8000
+paths:
+  /ingest:
+    post:
+      summary: Ingest or refresh one exact documentation URL
+      operationId: ingestUrl
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/IngestRequest"
+      responses:
+        "202":
+          description: Ingestion accepted or completed for local workflow
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IngestResponse"
+        "400":
+          description: Invalid or unsupported URL
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "502":
+          description: URL could not be fetched or parsed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /search:
+    post:
+      summary: Search active documentation chunks
+      operationId: searchDocs
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SearchRequest"
+      responses:
+        "200":
+          description: Search results or clear no-match response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SearchResponse"
+        "400":
+          description: Invalid search request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+components:
+  schemas:
+    IngestRequest:
+      type: object
+      required:
+        - url
+      additionalProperties: false
+      properties:
+        url:
+          type: string
+          format: uri
+          description: Exact HTTP or HTTPS documentation page URL. Linked pages are not crawled.
+    IngestResponse:
+      type: object
+      required:
+        - document_id
+        - source_url
+        - status
+        - chunks_indexed
+        - refreshed
+      additionalProperties: false
+      properties:
+        document_id:
+          type: string
+          format: uuid
+        source_url:
+          type: string
+          format: uri
+        status:
+          type: string
+          enum: [succeeded, failed]
+        chunks_indexed:
+          type: integer
+          minimum: 0
+        refreshed:
+          type: boolean
+          description: True when previous active content for the URL was replaced.
+        message:
+          type: string
+    SearchRequest:
+      type: object
+      required:
+        - query
+      additionalProperties: false
+      properties:
+        query:
+          type: string
+          minLength: 1
+        limit:
+          type: integer
+          minimum: 1
+          maximum: 20
+          default: 5
+    SearchResponse:
+      type: object
+      required:
+        - query
+        - results
+      additionalProperties: false
+      properties:
+        query:
+          type: string
+        results:
+          type: array
+          items:
+            $ref: "#/components/schemas/SearchResult"
+        no_match_reason:
+          type: string
+          description: Present when results is empty.
+    SearchResult:
+      type: object
+      required:
+        - section_id
+        - document_id
+        - source_url
+        - heading_path
+        - excerpt
+        - full_chunk_text
+        - rank
+        - score
+      additionalProperties: false
+      properties:
+        section_id:
+          type: string
+          format: uuid
+        document_id:
+          type: string
+          format: uuid
+        source_url:
+          type: string
+          format: uri
+        title:
+          type: string
+        heading_path:
+          type: array
+          items:
+            type: string
+        excerpt:
+          type: string
+        full_chunk_text:
+          type: string
+        rank:
+          type: integer
+          minimum: 1
+        score:
+          type: number
+    ErrorResponse:
+      type: object
+      required:
+        - error
+      additionalProperties: false
+      properties:
+        error:
+          type: string
+        detail:
+          type: string

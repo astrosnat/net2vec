@@ -1,0 +1,75 @@
+{
+  "server": {
+    "name": "net2vec",
+    "transport": "streamable_http",
+    "default_url": "http://127.0.0.1:8001/mcp"
+  },
+  "tool": {
+    "name": "search_docs",
+    "description": "Search active ingested documentation chunks and return source-grounded excerpts plus full stored chunk text.",
+    "input_schema": {
+      "type": "object",
+      "required": ["query"],
+      "additionalProperties": false,
+      "properties": {
+        "query": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Natural-language documentation search query."
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 20,
+          "default": 5,
+          "description": "Maximum number of results to return."
+        }
+      }
+    },
+    "output_schema": {
+      "type": "object",
+      "required": ["results"],
+      "additionalProperties": false,
+      "properties": {
+        "results": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "section_id",
+              "document_id",
+              "source_url",
+              "heading_path",
+              "excerpt",
+              "full_chunk_text",
+              "rank",
+              "score"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "section_id": { "type": "string" },
+              "document_id": { "type": "string" },
+              "source_url": { "type": "string" },
+              "title": { "type": "string" },
+              "heading_path": {
+                "type": "array",
+                "items": { "type": "string" }
+              },
+              "excerpt": { "type": "string" },
+              "full_chunk_text": { "type": "string" },
+              "rank": { "type": "integer" },
+              "score": { "type": "number" }
+            }
+          }
+        },
+        "no_match_reason": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "codex_config": {
+    "file": "~/.codex/config.toml",
+    "toml": "[mcp_servers.net2vec]\nurl = \"http://127.0.0.1:8001/mcp\""
+  }
+}
