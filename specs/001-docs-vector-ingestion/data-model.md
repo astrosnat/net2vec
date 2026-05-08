@@ -55,9 +55,9 @@ Represents one heading-aware searchable chunk.
 | full_chunk_text | string | Yes | Complete stored chunk returned by search |
 | token_count | integer | Yes | Estimated chunk size |
 | content_hash | string | Yes | Chunk-level duplicate detection |
-| embedding_model | string | Yes | Model used to create the embedding |
-| embedding_dimensions | integer | Yes | Vector size |
-| embedding | vector | Yes | pgvector embedding |
+| embedding_model | string | Yes | CodeBERT model identifier used to create the embedding |
+| embedding_dimensions | integer | Yes | Vector size; initial CodeBERT value is 768 |
+| embedding | vector | Yes | pgvector embedding compatible with CodeBERT dimensions |
 | active | boolean | Yes | Mirrors active source document version |
 | created_at | timestamp | Yes | Chunk creation timestamp |
 
@@ -66,7 +66,10 @@ Represents one heading-aware searchable chunk.
 - `chunk_index` MUST be unique within an active `document_id`.
 - `full_chunk_text` MUST be non-empty after trimming.
 - `excerpt` MUST be derived from `full_chunk_text`.
-- `embedding_dimensions` MUST match the configured embedding model.
+- `embedding_model` MUST identify CodeBERT for the initial feature.
+- `embedding_dimensions` MUST be 768 for CodeBERT embeddings.
+- Stored document-section embeddings and search-query embeddings MUST use the
+  same CodeBERT model and pooling strategy before similarity comparison.
 - Search results MUST include `excerpt`, `full_chunk_text`, `source_url`,
   `heading_path`, and relevance information.
 
@@ -111,6 +114,8 @@ Represents one ranked chunk returned to a user or Codex.
 - Results MUST be ordered by relevance.
 - Results MUST only include active document sections.
 - Every result MUST include source URL and heading context.
+- Results MUST be ranked from comparisons between a CodeBERT query embedding and
+  active CodeBERT document-section embeddings.
 
 ## AgentToolConfiguration
 

@@ -1,10 +1,10 @@
 ﻿# net2vec Development Guidelines
 
-Auto-generated from all feature plans. Last updated: 2026-04-24
+Auto-generated from all feature plans. Last updated: 2026-05-08
 
 ## Active Technologies
 
-- Python 3.12 + FastAPI, Uvicorn, Typer, Pydantic, SQLAlchemy 2.x, Alembic, psycopg 3, pgvector-python, OpenAI Python SDK, BeautifulSoup4, lxml, httpx, MCP Python SDK, pytest, ruff, lizard (001-docs-vector-ingestion)
+- Python 3.12 + FastAPI, Uvicorn, Typer, Pydantic, SQLAlchemy 2.x, Alembic, psycopg 3, pgvector-python, PyTorch, Hugging Face Transformers, BeautifulSoup4, lxml, httpx, MCP Python SDK, pytest, ruff, lizard; PostgreSQL 16+ with pgvector 0.8.x storing 768-dimensional CodeBERT vectors (001-docs-vector-ingestion)
 
 ## Project Structure
 
@@ -32,8 +32,7 @@ Python 3.12: Follow standard conventions
 - Validate data and integration contracts at boundaries.
 
 ## Recent Changes
-
-- 001-docs-vector-ingestion: Added Python 3.12 + FastAPI, Uvicorn, Typer, Pydantic, SQLAlchemy 2.x, Alembic, psycopg 3, pgvector-python, OpenAI Python SDK, BeautifulSoup4, lxml, httpx, MCP Python SDK, pytest, ruff, lizard
+- 001-docs-vector-ingestion: Added Python 3.12 + FastAPI, Uvicorn, Typer, Pydantic, SQLAlchemy 2.x, Alembic, psycopg 3, pgvector-python, PyTorch, Hugging Face Transformers, BeautifulSoup4, lxml, httpx, MCP Python SDK, pytest, ruff, lizard
 
 <!-- MANUAL ADDITIONS START -->
 <!-- MANUAL ADDITIONS END -->

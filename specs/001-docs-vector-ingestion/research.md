@@ -3,15 +3,15 @@
 ## Decision: Python 3.12 Single-Service Project
 
 **Rationale**: Python has mature libraries for HTTP fetching, HTML parsing,
-OpenAI embeddings, PostgreSQL access, API serving, CLI tooling, and MCP server
-implementation. A single package keeps the first version small while preserving
-clear adapter boundaries.
+local CodeBERT embeddings, PostgreSQL access, API serving, CLI tooling, and MCP
+server implementation. A single package keeps the first version small while
+preserving clear adapter boundaries.
 
 **Alternatives considered**:
 - TypeScript: strong MCP ecosystem, but less aligned with common Python data and
   text extraction tooling for this project.
-- Go: good for simple services, but slower path for OpenAI embedding and MCP
-  server ergonomics in this repo's initial state.
+- Go: good for simple services, but slower path for local model embedding and
+  MCP server ergonomics in this repo's initial state.
 
 ## Decision: PostgreSQL 16+ with pgvector 0.8.x
 
@@ -29,21 +29,30 @@ transactions and one-active-version constraints.
 
 **Source**: https://github.com/pgvector/pgvector
 
-## Decision: OpenAI `text-embedding-3-small` by Default
+## Decision: CodeBERT `microsoft/codebert-base` for Embeddings
 
-**Rationale**: OpenAI documentation lists `text-embedding-3-small` as a current
-small embedding model for text search use cases, with default 1536-dimensional
-vectors and lower cost than `text-embedding-3-large`. The plan stores the model
-name and dimension with each chunk so the corpus can be re-embedded if the model
-changes later.
+**Rationale**: The updated specification explicitly requires CodeBERT. Microsoft
+publishes `microsoft/codebert-base` as pretrained CodeBERT weights for
+programming languages and natural language, and the official CodeBERT repository
+documents loading it through Hugging Face Transformers. The model configuration
+uses 768-dimensional hidden states, so stored vectors, validation, migration
+planning, and query embeddings must consistently use dimension 768. The plan
+stores the model name and dimension with each chunk so the corpus can be
+re-embedded if a future feature changes the model.
 
 **Alternatives considered**:
-- `text-embedding-3-large`: likely higher retrieval quality, but more expensive
-  and larger default vectors for an initial local/internal tool.
-- Locally hosted embedding model: avoids provider dependency but increases setup
-  complexity and hardware variability.
+- OpenAI `text-embedding-3-small`: already fits generic text search and existing
+  implementation direction, but it conflicts with the explicit CodeBERT
+  requirement.
+- GraphCodeBERT: code-aware and closely related, but it is a different model
+  family than the requested CodeBERT and would expand scope.
+- Generic sentence-transformer models: may perform better on natural-language
+  document retrieval, but they do not satisfy the explicit CodeBERT constraint.
 
-**Source**: https://platform.openai.com/docs/guides/embeddings
+**Sources**:
+- https://huggingface.co/microsoft/codebert-base
+- https://huggingface.co/microsoft/codebert-base/blob/main/config.json
+- https://github.com/microsoft/CodeBERT
 
 ## Decision: Heading-Aware DOM Chunking
 

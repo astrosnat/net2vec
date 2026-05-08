@@ -7,15 +7,16 @@ documentation URL, local/internal search, and Codex access through `search_docs`
 
 - Python 3.12
 - PostgreSQL 16+ with the pgvector extension available
-- OpenAI API credentials for embedding generation
+- Network access for the first local download of `microsoft/codebert-base`, or a
+  pre-populated local Hugging Face model cache
 - Codex CLI or IDE extension using the shared Codex MCP configuration
 
 ## 1. Configure Environment
 
 ```powershell
 $env:DATABASE_URL = "postgresql+psycopg://net2vec:net2vec@localhost:5432/net2vec"
-$env:OPENAI_API_KEY = "<your-api-key>"
-$env:NET2VEC_EMBEDDING_MODEL = "text-embedding-3-small"
+$env:NET2VEC_EMBEDDING_MODEL = "microsoft/codebert-base"
+$env:NET2VEC_EMBEDDING_DIMENSIONS = "768"
 ```
 
 ## 2. Prepare the Database
@@ -24,7 +25,8 @@ $env:NET2VEC_EMBEDDING_MODEL = "text-embedding-3-small"
 python -m net2vec.persistence.migrations upgrade
 ```
 
-Expected result: database tables exist and pgvector is enabled for embeddings.
+Expected result: database tables exist, pgvector is enabled for embeddings, and
+the document-section embedding column accepts 768-dimensional CodeBERT vectors.
 
 ## 3. Ingest One Exact Documentation URL
 
@@ -37,6 +39,7 @@ Expected result:
 - Exactly the submitted page is fetched.
 - Linked pages are not crawled.
 - Heading-aware chunks are stored.
+- Chunks are embedded with CodeBERT.
 - Re-running the command replaces the previous active content for that URL.
 
 ## 4. Start the Search API

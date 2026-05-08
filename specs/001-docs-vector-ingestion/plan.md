@@ -1,23 +1,23 @@
 # Implementation Plan: Documentation Vector Ingestion
 
-**Branch**: `001-docs-vector-ingestion` | **Date**: 2026-04-24 | **Spec**: [spec.md](./spec.md)
+**Branch**: `001-docs-vector-ingestion` | **Date**: 2026-05-08 | **Spec**: [spec.md](./spec.md)
 **Input**: Feature specification from `/specs/001-docs-vector-ingestion/spec.md`
 
 ## Summary
 
 Build a local/internal documentation retrieval system that ingests one exact
-documentation URL at a time, extracts heading-aware chunks, embeds them, stores
-one active version per URL in PostgreSQL with pgvector, exposes semantic search
-through an HTTP API, and exposes the same search contract to Codex through an
-MCP tool named `search_docs`.
+documentation URL at a time, extracts heading-aware chunks, embeds them with
+CodeBERT, stores one active version per URL in PostgreSQL with pgvector, exposes
+semantic search through an HTTP API, and exposes the same search contract to
+Codex through an MCP tool named `search_docs`.
 
 ## Technical Context
 
 **Language/Version**: Python 3.12  
-**Primary Dependencies**: FastAPI, Uvicorn, Typer, Pydantic, SQLAlchemy 2.x, Alembic, psycopg 3, pgvector-python, OpenAI Python SDK, BeautifulSoup4, lxml, httpx, MCP Python SDK, pytest, ruff, lizard  
-**Storage**: PostgreSQL 16+ with pgvector 0.8.x extension  
-**Testing**: pytest with unit, contract, and integration tests;
-`lizard -C 3` for cyclomatic complexity; ruff for linting  
+**Primary Dependencies**: FastAPI, Uvicorn, Typer, Pydantic, SQLAlchemy 2.x, Alembic, psycopg 3, pgvector-python, PyTorch, Hugging Face Transformers, BeautifulSoup4, lxml, httpx, MCP Python SDK, pytest, ruff, lizard  
+**Storage**: PostgreSQL 16+ with pgvector 0.8.x extension; CodeBERT vectors are stored as 768-dimensional pgvector values  
+**Testing**: pytest with unit, contract, and integration tests; `lizard -C 3`
+for cyclomatic complexity; ruff for linting  
 **Target Platform**: Local developer workstation and trusted internal network  
 **Project Type**: Single Python project exposing CLI, HTTP API, and MCP server  
 **Performance Goals**: Ingest one public documentation page and make it
@@ -25,9 +25,10 @@ searchable in under 2 minutes; return 95% of searches over a small local corpus
 within 2 seconds; place expected answer chunks in top 3 for at least 90% of the
 representative test queries  
 **Constraints**: Exact-URL ingestion only; one active version per URL;
-heading-aware chunks; trusted local/internal access only; Codex configuration
-only; search results include excerpt and full stored chunk; every function or
-method keeps cyclomatic complexity below 4  
+heading-aware chunks; CodeBERT is the required embedding model; CodeBERT
+embeddings are 768-dimensional; trusted local/internal access only; Codex
+configuration only; search results include excerpt and full stored chunk; every
+function or method keeps cyclomatic complexity below 4  
 **Scale/Scope**: Small to moderate documentation collections, not a web-scale
 crawler; initial corpus target up to 1,000 source documents and 50,000 chunks
 
@@ -37,24 +38,30 @@ crawler; initial corpus target up to 1,000 source documents and 50,000 chunks
 
 - **Complexity Under Four**: PASS. Branching-heavy behavior is decomposed into
   focused units: URL fetch policy, content extraction, heading tree traversal,
-  chunk building, embedding orchestration, repository writes, search ranking,
-  HTTP handlers, and MCP adapter functions. `lizard -C 3` is required to fail
-  functions or methods with complexity 4 or higher.
+  chunk building, CodeBERT embedding adapter, embedding orchestration,
+  repository writes, search ranking, HTTP handlers, and MCP adapter functions.
+  `lizard -C 3` is required to fail functions or methods with complexity 4 or
+  higher.
 - **SOLID Design**: PASS. Domain services depend on protocol-like ports for
   fetching, embedding, persistence, and search. FastAPI routes, Typer commands,
   and MCP tools are adapters that delegate to services rather than embedding
-  business rules.
+  business rules. CodeBERT is isolated behind the existing embedding client
+  boundary so retrieval callers do not depend on Transformers or PyTorch APIs.
 - **Separation of Concerns**: PASS. Ingestion, parsing, chunking, embedding,
   vector persistence, search, HTTP API, MCP tool exposure, and Codex config
-  generation have separate modules and tests.
+  generation have separate modules and tests. CodeBERT tokenization, pooling,
+  and model loading stay in the embedding adapter.
 - **Testable Agent-Facing Behavior**: PASS. The `search_docs` contract has MCP
   contract tests, an end-to-end Codex configuration quickstart, and shared
   search service tests verifying excerpt, full chunk, URL, heading context, and
-  relevance ordering.
+  relevance ordering. CodeBERT wiring adds adapter tests for dimensions and
+  deterministic fake-model search tests so agent-facing result shape remains
+  stable.
 - **Explicit Boundaries**: PASS. Data schemas are documented in
   `data-model.md`; HTTP and MCP contracts are documented in `contracts/`;
-  refresh semantics replace active content by URL; no public authentication is
-  claimed for the initial release.
+  refresh semantics replace active content by URL; the embedding boundary now
+  records CodeBERT model identity and 768-dimensional vector compatibility; no
+  public authentication is claimed for the initial release.
 
 ## Project Structure
 
@@ -104,6 +111,7 @@ src/net2vec/
 |-- embeddings/
 |   |-- __init__.py
 |   |-- client.py
+|   |-- codebert.py
 |   `-- service.py
 |-- persistence/
 |   |-- __init__.py
@@ -129,6 +137,7 @@ tests/
 |   `-- test_codex_config_quickstart.py
 `-- unit/
     |-- test_chunker.py
+    |-- test_codebert_embedding.py
     |-- test_extractor.py
     |-- test_search_service.py
     `-- test_repositories.py
@@ -137,7 +146,10 @@ tests/
 **Structure Decision**: Use a single Python package because the feature is one
 cohesive local/internal service with three adapters over the same domain
 services: CLI ingestion, HTTP search, and MCP search. The split above keeps
-concerns isolated without creating separate deployable projects.
+concerns isolated without creating separate deployable projects. CodeBERT gets
+its own adapter module under `src/net2vec/embeddings/` to preserve the existing
+embedding service contract and keep model-specific dependencies out of search,
+ingestion, API, and MCP modules.
 
 ## Complexity Tracking
 
