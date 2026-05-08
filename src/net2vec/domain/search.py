@@ -29,3 +29,22 @@ class SearchResult:
     rank: int
     score: float
     title: str | None = None
+
+
+@dataclass(frozen=True)
+class SearchMatch:
+    section_id: UUID
+    document_id: UUID
+    source_url: str
+    heading_path: tuple[str, ...]
+    excerpt: str
+    full_chunk_text: str
+    distance: float
+    title: str | None = None
+
+
+@dataclass(frozen=True)
+class SearchResponse:
+    query: str
+    results: tuple[SearchResult, ...]
+    no_match_reason: str | None = None

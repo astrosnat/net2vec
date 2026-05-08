@@ -3,7 +3,7 @@
 **Feature Branch**: `001-docs-vector-ingestion`  
 **Created**: 2026-04-24  
 **Status**: Draft  
-**Input**: User description: "I want to build a system that takes webpages like the go style guide and vector embeds them so an agent like codex or claude can just crawl through that. The system should take this shape at a high level: 1. A URL ingestion script. 2. A Postgres database with pgvector. 3. A chunking strategy based on headings. 4. An embedding step. 5. A search API. 6. An MCP server exposing search_docs. 7. A Codex/Claude config pointing to that MCP server."
+**Input**: User description: "I want to build a system that takes webpages like the go style guide and vector embeds them so an agent like codex or claude can just crawl through that. The system should take this shape at a high level: 1. A URL ingestion script. 2. A Postgres database with pgvector. 3. A chunking strategy based on headings. 4. An embedding step. 5. A search API. 6. An MCP server exposing search_docs. 7. A Codex/Claude config pointing to that MCP server. Update: use CodeBERT explicitly as the embedding model."
 
 ## Clarifications
 
@@ -14,6 +14,10 @@
 - Q: What access model should the initial search service and agent tool use? -> A: Trusted local/internal access only.
 - Q: What content should each search result return? -> A: Excerpt and full chunk.
 - Q: Which agent client configuration should the initial feature provide? -> A: Codex config only.
+
+### Session 2026-05-08
+
+- Q: Which embedding model should the initial feature use? -> A: CodeBERT explicitly.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -111,6 +115,7 @@ tool, ask it a question about an ingested guide, and verify it calls
 - **FR-011**: System MUST allow search results to be limited by result count to keep agent responses concise.
 - **FR-012**: System MUST preserve enough source context for a user to verify retrieved excerpts against the original webpage.
 - **FR-013**: System MUST document that initial search and agent-tool access is limited to trusted local or internal clients and MUST NOT present the service as public-access ready.
+- **FR-014**: System MUST embed ingested documentation and search queries with CodeBERT so retrieval behavior is based on a consistent CodeBERT representation.
 
 ### Quality & Boundary Requirements
 
@@ -129,7 +134,8 @@ tool, ask it a question about an ingested guide, and verify it calls
 - **Source Document**: A webpage submitted for ingestion, including its URL,
   title, retrieval metadata, active status, and refresh timestamp.
 - **Document Section**: A searchable excerpt derived from a source document,
-  including text, heading path, order within the document, and source reference.
+  including text, heading path, order within the document, source reference, and
+  CodeBERT-derived retrieval representation.
 - **Search Query**: A user or agent request for relevant documentation, including
   query text and optional result limit.
 - **Search Result**: A ranked section returned for a query, including excerpt,
@@ -156,5 +162,6 @@ tool, ask it a question about an ingested guide, and verify it calls
   public anonymous service.
 - The initial corpus size is small to moderate documentation collections rather
   than a full web-scale crawler.
-- The exact storage engine, embedding provider, and service framework will be
-  selected during planning while preserving the user-requested end-to-end shape.
+- The storage engine and service framework will be selected during planning
+  while preserving the user-requested end-to-end shape.
+- CodeBERT is the required embedding model for the initial feature.

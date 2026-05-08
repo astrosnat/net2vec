@@ -15,6 +15,9 @@ class EmbeddingService:
         vectors = self.client.embed(texts, self.model)
         return [_validate_vector(vector, self.dimensions) for vector in vectors]
 
+    def embed_query(self, query: str) -> tuple[float, ...]:
+        return self.embed_texts([query])[0]
+
 
 def _validate_vector(vector: list[float], dimensions: int) -> tuple[float, ...]:
     if len(vector) != dimensions:

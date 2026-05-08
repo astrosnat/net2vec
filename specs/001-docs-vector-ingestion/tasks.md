@@ -113,23 +113,23 @@ no-match behavior for unrelated queries.
 
 ### Tests for User Story 2
 
-- [ ] T037 [P] [US2] Add contract tests for `/search` request and response shape from `contracts/openapi.yaml` in `tests/contract/test_http_search_contract.py`
-- [ ] T038 [P] [US2] Add unit tests for search query validation and limit bounds in `tests/unit/test_search_service.py`
-- [ ] T039 [P] [US2] Add unit tests for ranking output and active-section filtering in `tests/unit/test_search_service.py`
-- [ ] T040 [P] [US2] Add unit tests for no-match and empty-corpus responses in `tests/unit/test_search_service.py`
-- [ ] T041 [US2] Add integration test for ingest then semantic search flow in `tests/integration/test_search_flow.py`
+- [X] T037 [P] [US2] Add contract tests for `/search` request and response shape from `contracts/openapi.yaml` in `tests/contract/test_http_search_contract.py`
+- [X] T038 [P] [US2] Add unit tests for search query validation and limit bounds in `tests/unit/test_search_service.py`
+- [X] T039 [P] [US2] Add unit tests for ranking output and active-section filtering in `tests/unit/test_search_service.py`
+- [X] T040 [P] [US2] Add unit tests for no-match and empty-corpus responses in `tests/unit/test_search_service.py`
+- [X] T041 [US2] Add integration test for ingest then semantic search flow in `tests/integration/test_search_flow.py`
 
 ### Implementation for User Story 2
 
-- [ ] T042 [US2] Implement search request and result schemas in `src/net2vec/api/routes.py`
-- [ ] T043 [US2] Implement query embedding reuse through `src/net2vec/embeddings/service.py`
-- [ ] T044 [US2] Implement pgvector similarity search over active chunks in `src/net2vec/search/service.py`
-- [ ] T045 [US2] Implement relevance rank and score normalization in `src/net2vec/search/ranking.py`
-- [ ] T046 [US2] Implement `/search` route with clear no-match and validation responses in `src/net2vec/api/routes.py`
-- [ ] T047 [US2] Wire search routes into FastAPI application in `src/net2vec/api/app.py`
-- [ ] T048 [US2] Add `/ingest` HTTP route delegating to the US1 pipeline in `src/net2vec/api/routes.py`
-- [ ] T049 [US2] Verify returned results include excerpt, full chunk, source URL, heading path, rank, and score in `src/net2vec/search/service.py`
-- [ ] T050 [US2] Verify US2 functions stay below cyclomatic complexity 4 with `lizard -C 3 src/net2vec/search src/net2vec/api tests`
+- [X] T042 [US2] Implement search request and result schemas in `src/net2vec/api/routes.py`
+- [X] T043 [US2] Implement query embedding reuse through `src/net2vec/embeddings/service.py`
+- [X] T044 [US2] Implement pgvector similarity search over active chunks in `src/net2vec/search/service.py`
+- [X] T045 [US2] Implement relevance rank and score normalization in `src/net2vec/search/ranking.py`
+- [X] T046 [US2] Implement `/search` route with clear no-match and validation responses in `src/net2vec/api/routes.py`
+- [X] T047 [US2] Wire search routes into FastAPI application in `src/net2vec/api/app.py`
+- [X] T048 [US2] Add `/ingest` HTTP route delegating to the US1 pipeline in `src/net2vec/api/routes.py`
+- [X] T049 [US2] Verify returned results include excerpt, full chunk, source URL, heading path, rank, and score in `src/net2vec/search/service.py`
+- [X] T050 [US2] Verify US2 functions stay below cyclomatic complexity 4 with `lizard -C 3 src/net2vec/search src/net2vec/api tests`
 
 **Checkpoint**: User Stories 1 and 2 are independently functional; HTTP search
 contract is valid.

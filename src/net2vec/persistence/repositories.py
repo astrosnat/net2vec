@@ -2,11 +2,13 @@
 
 from __future__ import annotations
 
+import math
 from typing import Protocol
 from uuid import UUID
 
 from net2vec.domain.chunks import DocumentSection
 from net2vec.domain.documents import SourceDocument
+from net2vec.domain.search import SearchMatch
 
 
 class DocumentRepository(Protocol):
@@ -33,6 +35,17 @@ class InMemoryDocumentRepository:
     def active_sections(self, document_id: UUID) -> list[DocumentSection]:
         return [section for section in self.sections.get(document_id, []) if section.active]
 
+    def count_active_sections(self) -> int:
+        return sum(len(self.active_sections(document.id)) for document in self._active_documents())
+
+    def search_active_sections(
+        self,
+        query_embedding: tuple[float, ...],
+        limit: int,
+    ) -> list[SearchMatch]:
+        matches = self._search_matches(query_embedding)
+        return sorted(matches, key=lambda match: match.distance)[:limit]
+
     def _deactivate_url(self, source_url: str) -> None:
         for document in self.documents.values():
             if document.source_url == source_url:
@@ -42,6 +55,16 @@ class InMemoryDocumentRepository:
     def _deactivate_sections(self, document_id: UUID) -> None:
         self.sections[document_id] = [
             _inactive_section(section) for section in self.sections.get(document_id, [])
+        ]
+
+    def _active_documents(self) -> list[SourceDocument]:
+        return [document for document in self.documents.values() if document.active]
+
+    def _search_matches(self, query_embedding: tuple[float, ...]) -> list[SearchMatch]:
+        return [
+            _search_match(document, section, query_embedding)
+            for document in self._active_documents()
+            for section in self.active_sections(document.id)
         ]
 
 
@@ -58,6 +81,37 @@ class SqlAlchemyDocumentRepository:
         self.session.flush()
         self.session.add_all(_section_records(DocumentSectionRecord, sections))
         self.session.commit()
+
+    def count_active_sections(self) -> int:
+        from net2vec.persistence.models import DocumentSectionRecord, SourceDocumentRecord
+
+        return (
+            self.session.query(DocumentSectionRecord)
+            .join(SourceDocumentRecord)
+            .filter(DocumentSectionRecord.active.is_(True), SourceDocumentRecord.active.is_(True))
+            .count()
+        )
+
+    def search_active_sections(
+        self,
+        query_embedding: tuple[float, ...],
+        limit: int,
+    ) -> list[SearchMatch]:
+        from net2vec.persistence.models import DocumentSectionRecord, SourceDocumentRecord
+
+        distance = DocumentSectionRecord.embedding.cosine_distance(list(query_embedding))
+        rows = (
+            self.session.query(DocumentSectionRecord, SourceDocumentRecord, distance)
+            .join(SourceDocumentRecord)
+            .filter(DocumentSectionRecord.active.is_(True), SourceDocumentRecord.active.is_(True))
+            .order_by(distance)
+            .limit(limit)
+            .all()
+        )
+        return [
+            _record_search_match(section, document, float(score))
+            for section, document, score in rows
+        ]
 
     def _deactivate_existing(self, source_url: str) -> None:
         from net2vec.persistence.models import DocumentSectionRecord, SourceDocumentRecord
@@ -137,3 +191,49 @@ def _section_record(record_type, section: DocumentSection):  # noqa: ANN001, ANN
         active=section.active,
         created_at=section.created_at,
     )
+
+
+def _search_match(
+    document: SourceDocument,
+    section: DocumentSection,
+    query_embedding: tuple[float, ...],
+) -> SearchMatch:
+    return SearchMatch(
+        section_id=section.id,
+        document_id=document.id,
+        source_url=document.source_url,
+        title=document.title,
+        heading_path=section.heading_path,
+        excerpt=section.excerpt,
+        full_chunk_text=section.full_chunk_text,
+        distance=_cosine_distance(query_embedding, section.embedding),
+    )
+
+
+def _record_search_match(section, document, distance: float) -> SearchMatch:  # noqa: ANN001
+    return SearchMatch(
+        section_id=section.id,
+        document_id=document.id,
+        source_url=document.source_url,
+        title=document.title,
+        heading_path=tuple(section.heading_path),
+        excerpt=section.excerpt,
+        full_chunk_text=section.full_chunk_text,
+        distance=distance,
+    )
+
+
+def _cosine_distance(left: tuple[float, ...], right: tuple[float, ...]) -> float:
+    denominator = _magnitude(left) * _magnitude(right)
+    if denominator == 0:
+        return 1.0
+    return 1.0 - (_dot(left, right) / denominator)
+
+
+def _dot(left: tuple[float, ...], right: tuple[float, ...]) -> float:
+    pairs = zip(left, right, strict=True)
+    return sum(left_value * right_value for left_value, right_value in pairs)
+
+
+def _magnitude(vector: tuple[float, ...]) -> float:
+    return math.sqrt(sum(value * value for value in vector))

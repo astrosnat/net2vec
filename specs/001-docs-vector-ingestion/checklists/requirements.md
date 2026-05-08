@@ -34,6 +34,9 @@
 - Validation passed after initial review.
 - User-provided implementation preferences are captured as planning assumptions
   rather than mandatory stakeholder requirements, except for the agent-facing
-  `search_docs` tool contract.
+  `search_docs` tool contract and the explicitly requested CodeBERT embedding
+  model constraint.
 - The `search_docs` name is retained because it is an externally visible agent
   contract requested by the user.
+- CodeBERT is retained in the specification because the user explicitly changed
+  the feature requirement to require that embedding model.
