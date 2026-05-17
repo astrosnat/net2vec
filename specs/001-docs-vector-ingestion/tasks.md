@@ -148,10 +148,10 @@ diagnostics when unavailable.
 
 ### Tests for User Story 3
 
-- [ ] T051 [P] [US3] Add MCP tool contract tests from `contracts/mcp-search-docs.json` in `tests/contract/test_mcp_search_docs_contract.py`
-- [ ] T052 [P] [US3] Add unit tests for Codex config snippet generation in `tests/unit/test_codex_config.py`
-- [ ] T053 [P] [US3] Add unit tests for MCP no-match and validation responses in `tests/unit/test_mcp_server.py`
-- [ ] T054 [US3] Add integration test for Codex configuration quickstart expectations in `tests/integration/test_codex_config_quickstart.py`
+- [X] T051 [P] [US3] Add MCP tool contract tests from `contracts/mcp-search-docs.json` in `tests/contract/test_mcp_search_docs_contract.py`
+- [X] T052 [P] [US3] Add unit tests for Codex config snippet generation in `tests/unit/test_codex_config.py`
+- [X] T053 [P] [US3] Add unit tests for MCP no-match and validation responses in `tests/unit/test_mcp_server.py`
+- [X] T054 [US3] Add integration test for Codex configuration quickstart expectations in `tests/integration/test_codex_config_quickstart.py`
 
 ### Implementation for User Story 3
 
