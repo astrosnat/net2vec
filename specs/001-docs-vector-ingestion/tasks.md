@@ -155,14 +155,14 @@ diagnostics when unavailable.
 
 ### Implementation for User Story 3
 
-- [ ] T055 [US3] Implement `search_docs` MCP tool input and output schemas in `src/net2vec/mcp/server.py`
-- [ ] T056 [US3] Implement MCP `search_docs` handler delegating to `src/net2vec/search/service.py`
-- [ ] T057 [US3] Implement MCP server startup on local/internal endpoint in `src/net2vec/mcp/server.py`
-- [ ] T058 [US3] Implement Codex config snippet generation in `src/net2vec/config/codex.py`
-- [ ] T059 [US3] Add CLI command to print Codex MCP config in `src/net2vec/cli/ingest.py` or a new `src/net2vec/cli/configure.py`
-- [ ] T060 [US3] Update `specs/001-docs-vector-ingestion/quickstart.md` with exact MCP server startup and Codex validation commands from the implemented CLI
-- [ ] T061 [US3] Verify MCP output includes excerpt, full chunk, source URL, heading path, rank, and score in `src/net2vec/mcp/server.py`
-- [ ] T062 [US3] Verify US3 functions stay below cyclomatic complexity 4 with `lizard -C 3 src/net2vec/mcp src/net2vec/config tests`
+- [X] T055 [US3] Implement `search_docs` MCP tool input and output schemas in `src/net2vec/mcp/server.py`
+- [X] T056 [US3] Implement MCP `search_docs` handler delegating to `src/net2vec/search/service.py`
+- [X] T057 [US3] Implement MCP server startup on local/internal endpoint in `src/net2vec/mcp/server.py`
+- [X] T058 [US3] Implement Codex config snippet generation in `src/net2vec/config/codex.py`
+- [X] T059 [US3] Add CLI command to print Codex MCP config in `src/net2vec/cli/ingest.py` or a new `src/net2vec/cli/configure.py`
+- [X] T060 [US3] Update `specs/001-docs-vector-ingestion/quickstart.md` with exact MCP server startup and Codex validation commands from the implemented CLI
+- [X] T061 [US3] Verify MCP output includes excerpt, full chunk, source URL, heading path, rank, and score in `src/net2vec/mcp/server.py`
+- [X] T062 [US3] Verify US3 functions stay below cyclomatic complexity 4 with `lizard -C 3 src/net2vec/mcp src/net2vec/config tests`
 
 **Checkpoint**: All user stories are independently functional; Codex can query
 documentation through `search_docs`.

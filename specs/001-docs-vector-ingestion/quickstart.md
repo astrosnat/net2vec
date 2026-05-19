@@ -71,7 +71,13 @@ Expected result: local/internal MCP server exposes the `search_docs` tool.
 
 ## 6. Configure Codex
 
-Add the local MCP server to `~/.codex/config.toml`:
+Print the local Codex MCP configuration:
+
+```powershell
+python -m net2vec.cli.configure
+```
+
+Add the printed local MCP server block to `~/.codex/config.toml`:
 
 ```toml
 [mcp_servers.net2vec]
