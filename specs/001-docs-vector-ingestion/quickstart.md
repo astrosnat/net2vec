@@ -5,7 +5,7 @@ documentation URL, local/internal search, and Codex access through `search_docs`
 
 ## Prerequisites
 
-- Python 3.12
+- Python 3.14
 - PostgreSQL 16+ with the pgvector extension available
 - Network access for the first local download of `microsoft/codebert-base`, or a
   pre-populated local Hugging Face model cache

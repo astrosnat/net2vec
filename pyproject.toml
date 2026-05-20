@@ -7,7 +7,7 @@ name = "net2vec"
 version = "0.1.0"
 description = "Ingest documentation webpages, chunk them by headings, embed them, and expose them to agents."
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = ">=3.14"
 dependencies = [
   "fastapi>=0.110",
   "uvicorn>=0.27",

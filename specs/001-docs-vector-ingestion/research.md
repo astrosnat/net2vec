@@ -1,6 +1,6 @@
 # Research: Documentation Vector Ingestion
 
-## Decision: Python 3.12 Single-Service Project
+## Decision: Python 3.14 Single-Service Project
 
 **Rationale**: Python has mature libraries for HTTP fetching, HTML parsing,
 local CodeBERT embeddings, PostgreSQL access, API serving, CLI tooling, and MCP

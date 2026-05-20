@@ -4,6 +4,8 @@
 
 ## Local Development
 
+Use Python 3.14.
+
 ```powershell
 python -m pip install -e ".[dev]"
 pytest

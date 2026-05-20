@@ -13,7 +13,7 @@ Codex through an MCP tool named `search_docs`.
 
 ## Technical Context
 
-**Language/Version**: Python 3.12  
+**Language/Version**: Python 3.14  
 **Primary Dependencies**: FastAPI, Uvicorn, Typer, Pydantic, SQLAlchemy 2.x, Alembic, psycopg 3, pgvector-python, PyTorch, Hugging Face Transformers, BeautifulSoup4, lxml, httpx, MCP Python SDK, pytest, ruff, lizard  
 **Storage**: PostgreSQL 16+ with pgvector 0.8.x extension; CodeBERT vectors are stored as 768-dimensional pgvector values  
 **Testing**: pytest with unit, contract, and integration tests; `lizard -C 3`
