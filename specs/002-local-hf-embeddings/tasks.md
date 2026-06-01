@@ -17,9 +17,9 @@
 
 **Purpose**: Add dependency and example configuration support for local embeddings.
 
-- [ ] T001 Add `torch` and `transformers` runtime dependencies in `pyproject.toml`
-- [ ] T002 Add `NET2VEC_EMBEDDING_PROVIDER=local`, `NET2VEC_EMBEDDING_MODEL=microsoft/codebert-base`, and `NET2VEC_EMBEDDING_DIMENSIONS=768` defaults in `.env.example`
-- [ ] T003 [P] Update local embedding setup notes in `README.md`
+- [X] T001 Add `torch` and `transformers` runtime dependencies in `pyproject.toml`
+- [X] T002 Add `NET2VEC_EMBEDDING_PROVIDER=local`, `NET2VEC_EMBEDDING_MODEL=microsoft/codebert-base`, and `NET2VEC_EMBEDDING_DIMENSIONS=768` defaults in `.env.example`
+- [X] T003 [P] Update local embedding setup notes in `README.md`
 
 ---
 
@@ -29,15 +29,15 @@
 
 **CRITICAL**: No user story work can begin until this phase is complete.
 
-- [ ] T004 Add `embedding_provider` to `Settings` and default local model/dimension values in `src/net2vec/config/settings.py`
-- [ ] T005 Add provider validation helpers for `local` and `openai` values in `src/net2vec/config/settings.py`
-- [ ] T006 [P] Create embedding provider factory skeleton in `src/net2vec/embeddings/factory.py`
-- [ ] T007 Update imports and default embedding service construction to call the factory in `src/net2vec/cli/ingest.py`
-- [ ] T008 Update imports and default embedding service construction to call the factory in `src/net2vec/api/routes.py`
-- [ ] T009 Update imports and default embedding service construction to call the factory in `src/net2vec/mcp/server.py`
-- [ ] T010 [P] Add settings default and provider validation tests in `tests/unit/test_settings.py`
-- [ ] T011 [P] Add factory selection tests with fake clients in `tests/unit/test_embedding_factory.py`
-- [ ] T012 Run `pytest tests/unit/test_settings.py tests/unit/test_embedding_factory.py -ra` and confirm new foundational tests fail before implementation is complete
+- [X] T004 Add `embedding_provider` to `Settings` and default local model/dimension values in `src/net2vec/config/settings.py`
+- [X] T005 Add provider validation helpers for `local` and `openai` values in `src/net2vec/config/settings.py`
+- [X] T006 [P] Create embedding provider factory skeleton in `src/net2vec/embeddings/factory.py`
+- [X] T007 Update imports and default embedding service construction to call the factory in `src/net2vec/cli/ingest.py`
+- [X] T008 Update imports and default embedding service construction to call the factory in `src/net2vec/api/routes.py`
+- [X] T009 Update imports and default embedding service construction to call the factory in `src/net2vec/mcp/server.py`
+- [X] T010 [P] Add settings default and provider validation tests in `tests/unit/test_settings.py`
+- [X] T011 [P] Add factory selection tests with fake clients in `tests/unit/test_embedding_factory.py`
+- [X] T012 Run `pytest tests/unit/test_settings.py tests/unit/test_embedding_factory.py -ra` and confirm new foundational tests fail before implementation is complete
 
 **Checkpoint**: Foundation ready - user story implementation can now begin.
 

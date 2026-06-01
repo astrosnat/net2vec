@@ -3,8 +3,7 @@
 from __future__ import annotations
 
 from net2vec.config.settings import Settings
-from net2vec.embeddings.client import OpenAIEmbeddingClient
-from net2vec.embeddings.service import EmbeddingService
+from net2vec.embeddings.factory import create_embedding_service
 from net2vec.ingestion.fetcher import HttpFetcher
 from net2vec.ingestion.pipeline import IngestionPipeline
 from net2vec.persistence.database import create_session_factory
@@ -26,11 +25,7 @@ def ingest_url(url: str) -> int:
 def _ingest_with_session(url: str, settings: Settings, session):
     pipeline = IngestionPipeline(
         fetcher=HttpFetcher(),
-        embedding_service=EmbeddingService(
-            OpenAIEmbeddingClient(settings.openai_api_key),
-            model=settings.embedding_model,
-            dimensions=settings.embedding_dimensions,
-        ),
+        embedding_service=create_embedding_service(settings),
         repository=SqlAlchemyDocumentRepository(session),
     )
     return pipeline.ingest(url)

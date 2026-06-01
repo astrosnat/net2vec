@@ -12,8 +12,7 @@ from pydantic import BaseModel, ConfigDict, Field
 from net2vec.config.settings import Settings
 from net2vec.domain.documents import IngestionError
 from net2vec.domain.search import SearchResponse
-from net2vec.embeddings.client import OpenAIEmbeddingClient
-from net2vec.embeddings.service import EmbeddingService
+from net2vec.embeddings.factory import create_embedding_service
 from net2vec.ingestion.fetcher import HttpFetcher
 from net2vec.ingestion.pipeline import IngestionPipeline, IngestionResult
 from net2vec.persistence.database import create_session_factory
@@ -150,12 +149,8 @@ def _default_search_service(settings: Settings, session) -> SearchService:  # no
     return SearchService(_embedding_service(settings), SqlAlchemyDocumentRepository(session))
 
 
-def _embedding_service(settings: Settings) -> EmbeddingService:
-    return EmbeddingService(
-        OpenAIEmbeddingClient(settings.openai_api_key),
-        model=settings.embedding_model,
-        dimensions=settings.embedding_dimensions,
-    )
+def _embedding_service(settings: Settings):
+    return create_embedding_service(settings)
 
 
 def _ingest_response(result: IngestionResult) -> IngestResponse:

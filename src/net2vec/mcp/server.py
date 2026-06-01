@@ -6,8 +6,7 @@ from typing import Any, Protocol
 
 from net2vec.config.settings import Settings
 from net2vec.domain.search import SearchQuery, SearchResponse, SearchResult
-from net2vec.embeddings.client import OpenAIEmbeddingClient
-from net2vec.embeddings.service import EmbeddingService
+from net2vec.embeddings.factory import create_embedding_service
 from net2vec.persistence.database import create_session_factory
 from net2vec.persistence.repositories import SqlAlchemyDocumentRepository
 from net2vec.search.service import SearchService
@@ -88,12 +87,8 @@ def _default_search_service() -> SearchService:
     return SearchService(_embedding_service(settings), SqlAlchemyDocumentRepository(session))
 
 
-def _embedding_service(settings: Settings) -> EmbeddingService:
-    return EmbeddingService(
-        OpenAIEmbeddingClient(settings.openai_api_key),
-        model=settings.embedding_model,
-        dimensions=settings.embedding_dimensions,
-    )
+def _embedding_service(settings: Settings):
+    return create_embedding_service(settings)
 
 
 def _search_query(payload: dict[str, Any]) -> SearchQuery:

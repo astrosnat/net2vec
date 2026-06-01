@@ -23,9 +23,15 @@ running ingestion. The first feature quickstart is in
 
 ```powershell
 $env:DATABASE_URL = "postgresql+psycopg://net2vec:net2vec@localhost:5432/net2vec"
+$env:NET2VEC_EMBEDDING_PROVIDER = "local"
 $env:NET2VEC_EMBEDDING_MODEL = "microsoft/codebert-base"
 $env:NET2VEC_EMBEDDING_DIMENSIONS = "768"
 ```
+
+Local embedding mode uses Hugging Face Transformers and PyTorch, and does not
+require `OPENAI_API_KEY`. To use the external OpenAI embedding API instead, set
+`NET2VEC_EMBEDDING_PROVIDER` to `openai`, configure an OpenAI embedding model
+and matching dimensions, and provide `OPENAI_API_KEY`.
 
 ## 2. Prepare the Database
 
