@@ -51,19 +51,19 @@
 
 ### Tests for User Story 1
 
-- [ ] T013 [P] [US1] Add local embedding client unit tests with mocked tokenizer/model outputs in `tests/unit/test_local_embedding_client.py`
-- [ ] T014 [P] [US1] Add local no-API-key ingestion integration test using a fake local client through the factory boundary in `tests/integration/test_local_embedding_flow.py`
-- [ ] T015 [P] [US1] Add local query embedding reuse test in `tests/unit/test_embedding_service.py`
+- [X] T013 [P] [US1] Add local embedding client unit tests with mocked tokenizer/model outputs in `tests/unit/test_local_embedding_client.py`
+- [X] T014 [P] [US1] Add local no-API-key ingestion integration test using a fake local client through the factory boundary in `tests/integration/test_local_embedding_flow.py`
+- [X] T015 [P] [US1] Add local query embedding reuse test in `tests/unit/test_embedding_service.py`
 
 ### Implementation for User Story 1
 
-- [ ] T016 [US1] Implement `LocalEmbeddingClient` loading tokenizer/model once and running eval/inference mode in `src/net2vec/embeddings/client.py`
-- [ ] T017 [US1] Implement masked mean pooling and vector normalization helpers for local embeddings in `src/net2vec/embeddings/client.py`
-- [ ] T018 [US1] Wire `local` provider creation to `LocalEmbeddingClient` in `src/net2vec/embeddings/factory.py`
-- [ ] T019 [US1] Ensure local provider ignores missing `OPENAI_API_KEY` and returns 768-dimensional vectors in `src/net2vec/embeddings/factory.py`
-- [ ] T020 [US1] Preserve OpenAI provider creation for explicit external mode in `src/net2vec/embeddings/factory.py`
-- [ ] T021 [US1] Run `pytest tests/unit/test_local_embedding_client.py tests/unit/test_embedding_service.py tests/integration/test_local_embedding_flow.py -ra`
-- [ ] T022 [US1] Run `lizard -C 3 src/net2vec/embeddings src/net2vec/config tests/unit/test_local_embedding_client.py tests/integration/test_local_embedding_flow.py`
+- [X] T016 [US1] Implement `LocalEmbeddingClient` loading tokenizer/model once and running eval/inference mode in `src/net2vec/embeddings/client.py`
+- [X] T017 [US1] Implement masked mean pooling and vector normalization helpers for local embeddings in `src/net2vec/embeddings/client.py`
+- [X] T018 [US1] Wire `local` provider creation to `LocalEmbeddingClient` in `src/net2vec/embeddings/factory.py`
+- [X] T019 [US1] Ensure local provider ignores missing `OPENAI_API_KEY` and returns 768-dimensional vectors in `src/net2vec/embeddings/factory.py`
+- [X] T020 [US1] Preserve OpenAI provider creation for explicit external mode in `src/net2vec/embeddings/factory.py`
+- [X] T021 [US1] Run `pytest tests/unit/test_local_embedding_client.py tests/unit/test_embedding_service.py tests/integration/test_local_embedding_flow.py -ra`
+- [X] T022 [US1] Run `lizard -C 3 src/net2vec/embeddings src/net2vec/config tests/unit/test_local_embedding_client.py tests/integration/test_local_embedding_flow.py`
 
 **Checkpoint**: User Story 1 is functional and testable independently.
 
