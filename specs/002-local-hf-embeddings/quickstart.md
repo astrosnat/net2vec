@@ -47,7 +47,7 @@ Expected result:
 ## 5. Start the Search API
 
 ```powershell
-uvicorn net2vec.api.app:app --host 127.0.0.1 --port 8000
+python -m uvicorn net2vec.api.app:app --host 127.0.0.1 --port 8000
 ```
 
 Validate search:
@@ -73,9 +73,9 @@ Expected result: the local/internal MCP server exposes `search_docs`, and query 
 ## 7. Run Validation
 
 ```powershell
-pytest
-ruff check .
-lizard -C 3 src tests
+python -m pytest -ra
+python -m ruff check .
+python -m lizard -C 3 src tests
 ```
 
 Expected result: tests pass, style checks pass, and all functions stay below the project complexity limit.

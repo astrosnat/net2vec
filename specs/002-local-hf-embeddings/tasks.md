@@ -124,14 +124,14 @@
 
 **Purpose**: Validate documentation, contracts, quality gates, and quickstart behavior across the feature.
 
-- [ ] T042 [P] Update `specs/002-local-hf-embeddings/quickstart.md` if implementation commands or dependency names changed
-- [ ] T043 [P] Update `specs/002-local-hf-embeddings/contracts/embedding-configuration.md` if final error behavior differs
-- [ ] T044 [P] Update `specs/002-local-hf-embeddings/contracts/vector-storage.md` if migration guidance differs
-- [ ] T045 Run `pytest -ra`
-- [ ] T046 Run `ruff check .`
-- [ ] T047 Run `lizard -C 3 src tests`
-- [ ] T048 Validate quickstart commands in `specs/002-local-hf-embeddings/quickstart.md` against a fresh local configuration
-- [ ] T049 Review changed modules for SOLID responsibilities, separated concerns, and explicit data/integration boundaries
+- [X] T042 [P] Update `specs/002-local-hf-embeddings/quickstart.md` if implementation commands or dependency names changed
+- [X] T043 [P] Update `specs/002-local-hf-embeddings/contracts/embedding-configuration.md` if final error behavior differs
+- [X] T044 [P] Update `specs/002-local-hf-embeddings/contracts/vector-storage.md` if migration guidance differs
+- [X] T045 Run `pytest -ra`
+- [X] T046 Run `ruff check .`
+- [X] T047 Run `lizard -C 3 src tests`
+- [X] T048 Validate quickstart commands in `specs/002-local-hf-embeddings/quickstart.md` against a fresh local configuration
+- [X] T049 Review changed modules for SOLID responsibilities, separated concerns, and explicit data/integration boundaries
 
 ---
 

@@ -19,6 +19,6 @@
 
 ## Error Shape Expectations
 
-- CLI: exits non-zero and prints a clear configuration or embedding error.
-- HTTP API: returns a 400-class response for invalid embedding configuration reachable from request handling.
-- MCP tool: raises a validation/configuration failure without returning partial search results.
+- CLI: exits with code `2` and prints a clear embedding configuration error to stderr.
+- HTTP API: returns status `400` with `error` set to `invalid_embedding_configuration`.
+- MCP tool: raises `MCPValidationError` without returning partial search results.

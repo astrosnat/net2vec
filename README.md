@@ -8,9 +8,9 @@ Use Python 3.14.
 
 ```powershell
 python -m pip install -e ".[dev]"
-pytest
-ruff check .
-lizard -C 3 src tests
+python -m pytest -ra
+python -m ruff check .
+python -m lizard -C 3 src tests
 ```
 
 Copy `.env.example` to `.env` or export the variables in your shell before
@@ -63,7 +63,7 @@ Expected result:
 ## 4. Start the Search API
 
 ```powershell
-uvicorn net2vec.api.app:app --host 127.0.0.1 --port 8000
+python -m uvicorn net2vec.api.app:app --host 127.0.0.1 --port 8000
 ```
 
 Validate search:
