@@ -12,7 +12,7 @@ from pydantic import BaseModel, ConfigDict, Field
 from net2vec.config.settings import Settings
 from net2vec.domain.documents import IngestionError
 from net2vec.domain.search import SearchResponse
-from net2vec.embeddings.factory import create_embedding_service
+from net2vec.embeddings.factory import EmbeddingConfigurationError, create_embedding_service
 from net2vec.ingestion.fetcher import HttpFetcher
 from net2vec.ingestion.pipeline import IngestionPipeline, IngestionResult
 from net2vec.persistence.database import create_session_factory
@@ -86,6 +86,8 @@ def create_router(
     def ingest(request: IngestRequest):
         try:
             result = _ingest(request.url, ingestion_pipeline)
+        except EmbeddingConfigurationError as exc:
+            return _embedding_configuration_response(exc)
         except IngestionError as exc:
             return _ingest_error_response(exc)
         return _ingest_response(result)
@@ -98,6 +100,8 @@ def create_router(
     def search(request: SearchRequest):
         try:
             response = _search(request, search_service)
+        except EmbeddingConfigurationError as exc:
+            return _embedding_configuration_response(exc)
         except ValueError as exc:
             return _error_response(400, "invalid_search_request", str(exc))
         return _search_response(response)
@@ -189,6 +193,10 @@ def _search_result(result) -> SearchResultResponse:  # noqa: ANN001
 def _ingest_error_response(exc: IngestionError) -> JSONResponse:
     status_code = 400 if _is_url_error(str(exc)) else 502
     return _error_response(status_code, "ingestion_failed", str(exc))
+
+
+def _embedding_configuration_response(exc: EmbeddingConfigurationError) -> JSONResponse:
+    return _error_response(400, "invalid_embedding_configuration", str(exc))
 
 
 def _is_url_error(message: str) -> bool:

@@ -2,8 +2,10 @@
 
 from __future__ import annotations
 
+import sys
+
 from net2vec.config.settings import Settings
-from net2vec.embeddings.factory import create_embedding_service
+from net2vec.embeddings.factory import EmbeddingConfigurationError, create_embedding_service
 from net2vec.ingestion.fetcher import HttpFetcher
 from net2vec.ingestion.pipeline import IngestionPipeline
 from net2vec.persistence.database import create_session_factory
@@ -37,7 +39,11 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Ingest one exact documentation URL")
     parser.add_argument("url")
     args = parser.parse_args()
-    raise SystemExit(ingest_url(args.url))
+    try:
+        raise SystemExit(ingest_url(args.url))
+    except EmbeddingConfigurationError as exc:
+        print(f"embedding configuration error: {exc}", file=sys.stderr)
+        raise SystemExit(2) from exc
 
 
 if __name__ == "__main__":

@@ -15,6 +15,10 @@ DEFAULT_EMBEDDING_MODEL = "microsoft/codebert-base"
 DEFAULT_EMBEDDING_DIMENSIONS = 768
 
 
+class EmbeddingConfigurationError(ValueError):
+    """Raised when embedding provider settings are invalid."""
+
+
 @dataclass(frozen=True)
 class Settings:
     database_url: str
@@ -65,4 +69,6 @@ def _embedding_provider() -> str:
 def _validate_embedding_provider(provider: str) -> None:
     if provider not in SUPPORTED_EMBEDDING_PROVIDERS:
         supported = ", ".join(sorted(SUPPORTED_EMBEDDING_PROVIDERS))
-        raise ValueError(f"unsupported embedding provider {provider!r}; use one of: {supported}")
+        raise EmbeddingConfigurationError(
+            f"unsupported embedding provider {provider!r}; use one of: {supported}",
+        )

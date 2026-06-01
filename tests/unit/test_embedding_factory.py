@@ -1,6 +1,12 @@
+import pytest
+
 from net2vec.config.settings import Settings
 from net2vec.embeddings.client import EmbeddingClient
-from net2vec.embeddings.factory import create_embedding_client, create_embedding_service
+from net2vec.embeddings.factory import (
+    EmbeddingConfigurationError,
+    create_embedding_client,
+    create_embedding_service,
+)
 
 
 class FakeClient(EmbeddingClient):
@@ -37,6 +43,20 @@ def test_factory_creates_embedding_service() -> None:
 
     assert service.model == "fake-model"
     assert service.dimensions == 3
+
+
+def test_factory_rejects_unsupported_provider() -> None:
+    settings = _settings(provider="banana")
+
+    with pytest.raises(EmbeddingConfigurationError, match="unsupported embedding provider"):
+        create_embedding_client(settings)
+
+
+def test_factory_rejects_openai_provider_without_api_key() -> None:
+    settings = _settings(provider="openai", api_key=None)
+
+    with pytest.raises(EmbeddingConfigurationError, match="OPENAI_API_KEY"):
+        create_embedding_client(settings)
 
 
 def _settings(provider: str, api_key: str | None = None) -> Settings:

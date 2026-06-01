@@ -77,19 +77,19 @@
 
 ### Tests for User Story 2
 
-- [ ] T023 [P] [US2] Add unsupported provider configuration test in `tests/unit/test_embedding_factory.py`
-- [ ] T024 [P] [US2] Add OpenAI provider missing-key validation test in `tests/unit/test_embedding_factory.py`
-- [ ] T025 [P] [US2] Add HTTP search invalid embedding configuration contract test in `tests/contract/test_http_search_contract.py`
-- [ ] T026 [P] [US2] Add MCP search invalid embedding configuration contract test in `tests/contract/test_mcp_search_docs_contract.py`
+- [X] T023 [P] [US2] Add unsupported provider configuration test in `tests/unit/test_embedding_factory.py`
+- [X] T024 [P] [US2] Add OpenAI provider missing-key validation test in `tests/unit/test_embedding_factory.py`
+- [X] T025 [P] [US2] Add HTTP search invalid embedding configuration contract test in `tests/contract/test_http_search_contract.py`
+- [X] T026 [P] [US2] Add MCP search invalid embedding configuration contract test in `tests/contract/test_mcp_search_docs_contract.py`
 
 ### Implementation for User Story 2
 
-- [ ] T027 [US2] Introduce a shared embedding configuration error type in `src/net2vec/embeddings/factory.py`
-- [ ] T028 [US2] Map embedding configuration errors to 400-class HTTP responses in `src/net2vec/api/routes.py`
-- [ ] T029 [US2] Surface embedding configuration errors without partial results in `src/net2vec/mcp/server.py`
-- [ ] T030 [US2] Ensure CLI ingestion exits non-zero with clear provider/key errors in `src/net2vec/cli/ingest.py`
-- [ ] T031 [US2] Run `pytest tests/unit/test_embedding_factory.py tests/contract/test_http_search_contract.py tests/contract/test_mcp_search_docs_contract.py -ra`
-- [ ] T032 [US2] Run `lizard -C 3 src/net2vec/api src/net2vec/cli src/net2vec/mcp src/net2vec/embeddings tests/contract`
+- [X] T027 [US2] Introduce a shared embedding configuration error type in `src/net2vec/embeddings/factory.py`
+- [X] T028 [US2] Map embedding configuration errors to 400-class HTTP responses in `src/net2vec/api/routes.py`
+- [X] T029 [US2] Surface embedding configuration errors without partial results in `src/net2vec/mcp/server.py`
+- [X] T030 [US2] Ensure CLI ingestion exits non-zero with clear provider/key errors in `src/net2vec/cli/ingest.py`
+- [X] T031 [US2] Run `pytest tests/unit/test_embedding_factory.py tests/contract/test_http_search_contract.py tests/contract/test_mcp_search_docs_contract.py -ra`
+- [X] T032 [US2] Run `lizard -C 3 src/net2vec/api src/net2vec/cli src/net2vec/mcp src/net2vec/embeddings tests/contract`
 
 **Checkpoint**: User Stories 1 and 2 both work independently.
 

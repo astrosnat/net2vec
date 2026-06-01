@@ -6,7 +6,7 @@ from typing import Any, Protocol
 
 from net2vec.config.settings import Settings
 from net2vec.domain.search import SearchQuery, SearchResponse, SearchResult
-from net2vec.embeddings.factory import create_embedding_service
+from net2vec.embeddings.factory import EmbeddingConfigurationError, create_embedding_service
 from net2vec.persistence.database import create_session_factory
 from net2vec.persistence.repositories import SqlAlchemyDocumentRepository
 from net2vec.search.service import SearchService
@@ -77,7 +77,10 @@ def _tool_handler(search_service: SearchServicePort | None):
 def _service(search_service: SearchServicePort | None) -> SearchServicePort:
     if search_service is not None:
         return search_service
-    return _default_search_service()
+    try:
+        return _default_search_service()
+    except EmbeddingConfigurationError as exc:
+        raise MCPValidationError(str(exc)) from exc
 
 
 def _default_search_service() -> SearchService:

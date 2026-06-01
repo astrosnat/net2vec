@@ -33,6 +33,18 @@ def test_search_validation_error_matches_contract_shape() -> None:
     assert set(response.json()) == {"error", "detail"}
 
 
+def test_search_embedding_configuration_error_matches_contract_shape(monkeypatch) -> None:
+    monkeypatch.setenv("NET2VEC_EMBEDDING_PROVIDER", "openai")
+    monkeypatch.delenv("OPENAI_API_KEY", raising=False)
+    client = TestClient(create_app())
+
+    response = client.post("/search", json={"query": "mixed caps", "limit": 1})
+
+    assert response.status_code == 400
+    assert response.json()["error"] == "invalid_embedding_configuration"
+    assert "OPENAI_API_KEY" in response.json()["detail"]
+
+
 def _result() -> SearchResult:
     return SearchResult(
         section_id=uuid4(),

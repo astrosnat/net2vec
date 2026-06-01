@@ -34,6 +34,18 @@ def test_search_docs_output_matches_contract_shape() -> None:
     assert set(response["results"][0]) == _required_result_fields()
 
 
+def test_search_docs_embedding_configuration_error_has_no_partial_results(monkeypatch) -> None:
+    monkeypatch.setenv("NET2VEC_EMBEDDING_PROVIDER", "openai")
+    monkeypatch.delenv("OPENAI_API_KEY", raising=False)
+
+    try:
+        server._service(None)
+    except server.MCPValidationError as exc:
+        assert "OPENAI_API_KEY" in str(exc)
+    else:
+        raise AssertionError("expected MCPValidationError")
+
+
 def _contract() -> dict:
     path = Path("specs/001-docs-vector-ingestion/contracts/mcp-search-docs.json")
     return json.loads(path.read_text(encoding="utf-8"))

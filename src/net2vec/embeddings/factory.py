@@ -4,7 +4,12 @@ from __future__ import annotations
 
 from collections.abc import Callable
 
-from net2vec.config.settings import LOCAL_EMBEDDING_PROVIDER, OPENAI_EMBEDDING_PROVIDER, Settings
+from net2vec.config.settings import (
+    LOCAL_EMBEDDING_PROVIDER,
+    OPENAI_EMBEDDING_PROVIDER,
+    EmbeddingConfigurationError,
+    Settings,
+)
 from net2vec.embeddings.client import EmbeddingClient, LocalEmbeddingClient, OpenAIEmbeddingClient
 from net2vec.embeddings.service import EmbeddingService
 
@@ -32,5 +37,15 @@ def create_embedding_client(
     if settings.embedding_provider == LOCAL_EMBEDDING_PROVIDER:
         return local_factory()
     if settings.embedding_provider == OPENAI_EMBEDDING_PROVIDER:
+        _require_openai_key(settings.openai_api_key)
         return openai_factory(settings.openai_api_key)
-    raise ValueError(f"unsupported embedding provider {settings.embedding_provider!r}")
+    raise EmbeddingConfigurationError(
+        f"unsupported embedding provider {settings.embedding_provider!r}",
+    )
+
+
+def _require_openai_key(api_key: str | None) -> None:
+    if not api_key:
+        raise EmbeddingConfigurationError(
+            "OPENAI_API_KEY is required when NET2VEC_EMBEDDING_PROVIDER=openai",
+        )
