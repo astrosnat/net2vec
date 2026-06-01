@@ -27,16 +27,20 @@ def test_local_provider_ingests_and_searches_without_openai_key() -> None:
     result = pipeline.ingest("https://go.dev/doc/effective_go")
     response = SearchService(embeddings, repo).search("mixed caps", limit=1)
 
-    assert result.sections[0].embedding_model == "fake-model"
-    assert result.sections[0].embedding_dimensions == 3
+    assert result.sections[0].embedding_model == "microsoft/codebert-base"
+    assert result.sections[0].embedding_dimensions == 768
+    assert len(result.sections[0].embedding) == 768
     assert response.results[0].source_url == "https://go.dev/doc/effective_go"
     assert response.results[0].score == 1.0
 
 
 def _vector_for(text: str) -> list[float]:
+    vector = [0.0] * 768
     if "mixed" in text.lower():
-        return [1.0, 0.0, 0.0]
-    return [0.0, 1.0, 0.0]
+        vector[0] = 1.0
+    else:
+        vector[1] = 1.0
+    return vector
 
 
 def _settings(provider: str, api_key: str | None = None) -> Settings:
@@ -44,8 +48,8 @@ def _settings(provider: str, api_key: str | None = None) -> Settings:
         database_url="postgresql+psycopg://net2vec:net2vec@localhost:5432/net2vec",
         openai_api_key=api_key,
         embedding_provider=provider,
-        embedding_model="fake-model",
-        embedding_dimensions=3,
+        embedding_model="microsoft/codebert-base",
+        embedding_dimensions=768,
         api_host="127.0.0.1",
         api_port=8000,
         mcp_url="http://127.0.0.1:8001/mcp",

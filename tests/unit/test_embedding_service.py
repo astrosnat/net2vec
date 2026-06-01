@@ -26,6 +26,13 @@ def test_rejects_unexpected_dimensions() -> None:
         service.embed_texts(["one"])
 
 
+def test_rejects_vectors_that_do_not_match_configured_local_dimension() -> None:
+    service = EmbeddingService(FakeClient(), model="fake", dimensions=768)
+
+    with pytest.raises(ValueError, match="expected embedding dimension 768"):
+        service.embed_texts(["one"])
+
+
 def test_embed_query_reuses_text_embedding_path() -> None:
     client = FakeClient()
     service = EmbeddingService(client, model="fake", dimensions=3)

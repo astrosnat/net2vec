@@ -42,6 +42,10 @@ python -m net2vec.persistence.migrations upgrade
 Expected result: database tables exist, pgvector is enabled for embeddings, and
 the document-section embedding column accepts 768-dimensional CodeBERT vectors.
 
+Existing local databases created before the local embedding default may still
+have a 1536-dimensional vector column. Recreate the local database or apply an
+explicit migration before ingesting 768-dimensional local embeddings.
+
 ## 3. Ingest One Exact Documentation URL
 
 ```powershell

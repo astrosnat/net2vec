@@ -103,18 +103,18 @@
 
 ### Tests for User Story 3
 
-- [ ] T033 [P] [US3] Add model/migration vector dimension alignment test in `tests/unit/test_vector_storage_schema.py`
-- [ ] T034 [P] [US3] Add repository or ingestion test asserting stored local metadata dimension is 768 in `tests/integration/test_local_embedding_flow.py`
-- [ ] T035 [P] [US3] Add configured dimension mismatch test in `tests/unit/test_embedding_service.py`
+- [X] T033 [P] [US3] Add model/migration vector dimension alignment test in `tests/unit/test_vector_storage_schema.py`
+- [X] T034 [P] [US3] Add repository or ingestion test asserting stored local metadata dimension is 768 in `tests/integration/test_local_embedding_flow.py`
+- [X] T035 [P] [US3] Add configured dimension mismatch test in `tests/unit/test_embedding_service.py`
 
 ### Implementation for User Story 3
 
-- [ ] T036 [US3] Change SQLAlchemy document-section vector column to `Vector(768)` in `src/net2vec/persistence/models.py`
-- [ ] T037 [US3] Change initial Alembic document-section vector column to `Vector(768)` in `src/net2vec/persistence/migrations/versions/0001_enable_pgvector.py`
-- [ ] T038 [US3] Confirm embedding metadata records model and 768 dimensions during ingestion in `src/net2vec/ingestion/pipeline.py`
-- [ ] T039 [US3] Add clear vector dimension compatibility notes to `README.md`
-- [ ] T040 [US3] Run `pytest tests/unit/test_vector_storage_schema.py tests/unit/test_embedding_service.py tests/integration/test_local_embedding_flow.py -ra`
-- [ ] T041 [US3] Run `lizard -C 3 src/net2vec/persistence src/net2vec/ingestion tests/unit/test_vector_storage_schema.py tests/integration/test_local_embedding_flow.py`
+- [X] T036 [US3] Change SQLAlchemy document-section vector column to `Vector(768)` in `src/net2vec/persistence/models.py`
+- [X] T037 [US3] Change initial Alembic document-section vector column to `Vector(768)` in `src/net2vec/persistence/migrations/versions/0001_enable_pgvector.py`
+- [X] T038 [US3] Confirm embedding metadata records model and 768 dimensions during ingestion in `src/net2vec/ingestion/pipeline.py`
+- [X] T039 [US3] Add clear vector dimension compatibility notes to `README.md`
+- [X] T040 [US3] Run `pytest tests/unit/test_vector_storage_schema.py tests/unit/test_embedding_service.py tests/integration/test_local_embedding_flow.py -ra`
+- [X] T041 [US3] Run `lizard -C 3 src/net2vec/persistence src/net2vec/ingestion tests/unit/test_vector_storage_schema.py tests/integration/test_local_embedding_flow.py`
 
 **Checkpoint**: All user stories are independently functional.
 
