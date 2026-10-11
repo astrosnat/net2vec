@@ -75,20 +75,20 @@
 
 ### Tests for User Story 2
 
-- [ ] T021 [P] [US2] Add a contract test that validates default manifest shape and all seven approved entries against `specs/003-go-corpus-extraction/contracts/corpus-manifest.schema.json` in `tests/contract/test_corpus_manifest_contract.py`
-- [ ] T022 [P] [US2] Add unit tests for malformed JSON, unsupported schema versions, missing fields, duplicate IDs, normalized duplicate URLs, invalid classifications, and no enabled sources in `tests/unit/test_corpus_manifest.py`
-- [ ] T023 [P] [US2] Add unit tests for ordered execution, disabled entries, per-source failure isolation, complete outcome counts, and sanitized messages in `tests/unit/test_corpus_runner.py`
-- [ ] T024 [US2] Add an integration test proving only enabled manifest URLs are fetched and successful sources remain active after another source fails in `tests/integration/test_corpus_ingestion_flow.py`
+- [x] T021 [P] [US2] Add a contract test that validates default manifest shape and all seven approved entries against `specs/003-go-corpus-extraction/contracts/corpus-manifest.schema.json` in `tests/contract/test_corpus_manifest_contract.py`
+- [x] T022 [P] [US2] Add unit tests for malformed JSON, unsupported schema versions, missing fields, duplicate IDs, normalized duplicate URLs, invalid classifications, and no enabled sources in `tests/unit/test_corpus_manifest.py`
+- [x] T023 [P] [US2] Add unit tests for ordered execution, disabled entries, per-source failure isolation, complete outcome counts, and sanitized messages in `tests/unit/test_corpus_runner.py`
+- [x] T024 [US2] Add an integration test proving only enabled manifest URLs are fetched and successful sources remain active after another source fails in `tests/integration/test_corpus_ingestion_flow.py`
 
 ### Implementation for User Story 2
 
-- [ ] T025 [P] [US2] Create the versioned seven-source allowlist in `src/net2vec/config/corpora/go-style.json`
-- [ ] T026 [US2] Implement JSON loading, schema-version checks, URL normalization, cross-entry validation, and fail-before-fetch behavior in `src/net2vec/ingestion/manifest.py`
-- [ ] T027 [US2] Extend single-source ingestion to accept optional manifest provenance while keeping legacy URL ingestion compatible in `src/net2vec/ingestion/pipeline.py`
-- [ ] T028 [US2] Implement sequential corpus orchestration, skipped outcomes, per-source error isolation, and aggregate counts in `src/net2vec/ingestion/corpus.py`
-- [ ] T029 [US2] Implement default/custom manifest selection, per-entry output, summary output, and exit codes 0/1/2 in `src/net2vec/cli/ingest_corpus.py`
-- [ ] T030 [US2] Add CLI tests for default manifest use, custom manifest selection, output ordering, and success/partial-failure/validation exit codes in `tests/unit/test_ingest_corpus_cli.py`
-- [ ] T031 [US2] Verify no-crawl behavior, SOLID boundaries, sanitized failures, and cyclomatic complexity 3 or below across `src/net2vec/ingestion/manifest.py`, `src/net2vec/ingestion/corpus.py`, and `src/net2vec/cli/ingest_corpus.py`
+- [x] T025 [P] [US2] Create the versioned seven-source allowlist in `src/net2vec/config/corpora/go-style.json`
+- [x] T026 [US2] Implement JSON loading, schema-version checks, URL normalization, cross-entry validation, and fail-before-fetch behavior in `src/net2vec/ingestion/manifest.py`
+- [x] T027 [US2] Extend single-source ingestion to accept optional manifest provenance while keeping legacy URL ingestion compatible in `src/net2vec/ingestion/pipeline.py`
+- [x] T028 [US2] Implement sequential corpus orchestration, skipped outcomes, per-source error isolation, and aggregate counts in `src/net2vec/ingestion/corpus.py`
+- [x] T029 [US2] Implement default/custom manifest selection, per-entry output, summary output, and exit codes 0/1/2 in `src/net2vec/cli/ingest_corpus.py`
+- [x] T030 [US2] Add CLI tests for default manifest use, custom manifest selection, output ordering, and success/partial-failure/validation exit codes in `tests/unit/test_ingest_corpus_cli.py`
+- [x] T031 [US2] Verify no-crawl behavior, SOLID boundaries, sanitized failures, and cyclomatic complexity 3 or below across `src/net2vec/ingestion/manifest.py`, `src/net2vec/ingestion/corpus.py`, and `src/net2vec/cli/ingest_corpus.py`
 
 **Checkpoint**: User Stories 1 and 2 work together, while corpus validation and orchestration remain independently testable through injected boundaries.
 

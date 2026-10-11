@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "corpus_id": "go-style",
+  "title": "Curated Go Style Guidance",
+  "sources": [
+    {"id": "google-go-overview", "url": "https://google.github.io/styleguide/go/", "title": "Google Go Style Overview", "classification": "overview", "enabled": true},
+    {"id": "google-go-guide", "url": "https://google.github.io/styleguide/go/guide", "title": "Google Go Style Guide", "classification": "canonical", "enabled": true},
+    {"id": "google-go-decisions", "url": "https://google.github.io/styleguide/go/decisions", "title": "Google Go Style Decisions", "classification": "normative", "enabled": true},
+    {"id": "google-go-best-practices", "url": "https://google.github.io/styleguide/go/best-practices", "title": "Google Go Style Best Practices", "classification": "best-practice", "enabled": true},
+    {"id": "effective-go", "url": "https://go.dev/doc/effective_go", "title": "Effective Go", "classification": "baseline", "enabled": true},
+    {"id": "go-code-review-comments", "url": "https://go.dev/wiki/CodeReviewComments", "title": "Go Code Review Comments", "classification": "review", "enabled": true},
+    {"id": "go-test-comments", "url": "https://go.dev/wiki/TestComments", "title": "Go Test Comments", "classification": "testing", "enabled": true}
+  ]
+}

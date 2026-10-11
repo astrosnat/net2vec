@@ -7,7 +7,7 @@ import logging
 from dataclasses import dataclass
 
 from net2vec.domain.chunks import DocumentSection
-from net2vec.domain.documents import IngestionError, SourceDocument
+from net2vec.domain.documents import DocumentProvenance, IngestionError, SourceDocument
 from net2vec.embeddings.service import EmbeddingService
 from net2vec.ingestion.chunker import ChunkDraft, build_chunks
 from net2vec.ingestion.extractor import extract_page
@@ -34,14 +34,25 @@ class IngestionPipeline:
         self.embedding_service = embedding_service
         self.repository = repository
 
-    def ingest(self, url: str) -> IngestionResult:
+    def ingest(
+        self,
+        url: str,
+        provenance: DocumentProvenance | None = None,
+    ) -> IngestionResult:
         exact_url = validate_exact_url(url)
         fetched = self.fetcher.fetch(exact_url)
         page = extract_page(fetched.html)
         _require_content(page.blocks)
         drafts = build_chunks(page.blocks, source_url=exact_url)
         embeddings = self.embedding_service.embed_texts([draft.full_chunk_text for draft in drafts])
-        document = _document(exact_url, page.title, fetched.html, fetched.status_code)
+        document = _document(
+            exact_url,
+            fetched.url,
+            page.title,
+            fetched.html,
+            fetched.status_code,
+            provenance,
+        )
         sections = _sections(document, drafts, embeddings, self.embedding_service)
         self.repository.replace_active(document, sections)
         LOGGER.info(
@@ -51,8 +62,19 @@ class IngestionPipeline:
         return IngestionResult(document=document, sections=tuple(sections))
 
 
-def _document(url: str, title: str | None, html: str, status_code: int | None) -> SourceDocument:
-    document = SourceDocument(source_url=url)
+def _document(
+    url: str,
+    resolved_url: str,
+    title: str | None,
+    html: str,
+    status_code: int | None,
+    provenance: DocumentProvenance | None,
+) -> SourceDocument:
+    document = SourceDocument(
+        source_url=url,
+        resolved_url=resolved_url,
+        **_provenance_fields(provenance),
+    )
     document.mark_succeeded(title=title, content_hash=_hash(html), http_status=status_code)
     return document
 
@@ -97,3 +119,13 @@ def _hash(text: str) -> str:
 def _require_content(blocks: tuple) -> None:
     if not blocks:
         raise IngestionError("URL yielded no meaningful documentation content")
+
+
+def _provenance_fields(provenance: DocumentProvenance | None) -> dict:
+    if provenance is None:
+        return {}
+    return {
+        "corpus_id": provenance.corpus_id,
+        "manifest_source_id": provenance.manifest_source_id,
+        "source_classification": provenance.source_classification,
+    }

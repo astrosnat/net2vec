@@ -22,6 +22,13 @@ class IngestionError(Net2VecError):
     """Raised when ingestion cannot continue."""
 
 
+@dataclass(frozen=True)
+class DocumentProvenance:
+    corpus_id: str
+    manifest_source_id: str
+    source_classification: str
+
+
 @dataclass
 class SourceDocument:
     source_url: str
