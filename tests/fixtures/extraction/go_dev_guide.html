@@ -1,0 +1,22 @@
+<!-- Source structure: https://go.dev/wiki/TestComments ; retrieved 2026-10-11 -->
+<!doctype html>
+<html>
+  <head><title>Go Test Comments</title></head>
+  <body>
+    <nav>Documentation navigation</nav>
+    <article>
+      <h1>Go Test Comments</h1>
+      <blockquote><p>Tests should explain failures clearly.</p></blockquote>
+      <h2>Got before want</h2>
+      <p>Report <code>got</code> before <code>want</code> in failure messages.</p>
+      <pre>if got != want {
+	t.Errorf("Parse() = %v, want %v", got, want)
+}</pre>
+      <ol>
+        <li><p>Identify the function.</p></li>
+        <li><p>Identify the input.</p></li>
+      </ol>
+    </article>
+    <aside>Related wiki pages</aside>
+  </body>
+</html>

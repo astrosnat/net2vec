@@ -22,3 +22,20 @@ def test_uses_empty_heading_path_when_page_has_no_heading() -> None:
 
     assert chunks[0].heading_path == ()
     assert chunks[0].excerpt == "Plain documentation text."
+
+
+def test_preserves_structured_block_boundaries() -> None:
+    chunks = build_chunks(
+        [
+            ("text", 0, "Good:"),
+            ("code", 0, "func good() {\n\treturn\n}"),
+            ("text", 0, "Use this form."),
+            ("list-item", 0, "First rule"),
+            ("list-item", 0, "Second rule"),
+        ],
+        source_url="https://example.com/guide",
+    )
+
+    assert chunks[0].full_chunk_text == (
+        "Good:\n\nfunc good() {\n\treturn\n}\n\nUse this form.\n\nFirst rule\n\nSecond rule"
+    )

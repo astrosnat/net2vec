@@ -6,7 +6,18 @@ from datetime import datetime
 from uuid import uuid4
 
 from pgvector.sqlalchemy import Vector
-from sqlalchemy import Boolean, DateTime, ForeignKey, Integer, String, Text, UniqueConstraint, func
+from sqlalchemy import (
+    Boolean,
+    DateTime,
+    ForeignKey,
+    Index,
+    Integer,
+    String,
+    Text,
+    UniqueConstraint,
+    func,
+    text,
+)
 from sqlalchemy.dialects.postgresql import ARRAY, UUID
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
@@ -17,10 +28,21 @@ class Base(DeclarativeBase):
 
 class SourceDocumentRecord(Base):
     __tablename__ = "source_documents"
-    __table_args__ = (UniqueConstraint("source_url", "active", name="uq_active_source_url"),)
+    __table_args__ = (
+        Index(
+            "uq_active_source_url",
+            "source_url",
+            unique=True,
+            postgresql_where=text("active"),
+        ),
+    )
 
     id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid4)
     source_url: Mapped[str] = mapped_column(Text, nullable=False)
+    resolved_url: Mapped[str | None] = mapped_column(Text)
+    corpus_id: Mapped[str | None] = mapped_column(String(128))
+    manifest_source_id: Mapped[str | None] = mapped_column(String(128))
+    source_classification: Mapped[str | None] = mapped_column(String(32))
     title: Mapped[str | None] = mapped_column(Text)
     retrieval_status: Mapped[str] = mapped_column(String(32), nullable=False)
     http_status: Mapped[int | None] = mapped_column(Integer)

@@ -31,3 +31,22 @@ def test_refresh_replaces_active_sections_for_url() -> None:
     assert repo.active_document("https://go.dev/doc/effective_go") == second
     assert [section.full_chunk_text for section in repo.active_sections(second.id)] == ["new"]
     assert repo.active_sections(first.id) == []
+
+
+def test_search_match_preserves_manifest_provenance() -> None:
+    repo = InMemoryDocumentRepository()
+    document = SourceDocument(
+        source_url="https://go.dev/doc/effective_go",
+        resolved_url="https://go.dev/doc/effective_go",
+        corpus_id="go-style",
+        manifest_source_id="effective-go",
+        source_classification="baseline",
+    )
+    repo.replace_active(document, [_section(document.id, "names")])
+
+    match = repo.search_active_sections((1.0, 0.0, 0.0), limit=1)[0]
+
+    assert match.corpus_id == "go-style"
+    assert match.manifest_source_id == "effective-go"
+    assert match.source_classification == "baseline"
+    assert match.resolved_url == "https://go.dev/doc/effective_go"

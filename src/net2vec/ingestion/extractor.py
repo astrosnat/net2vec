@@ -1,13 +1,15 @@
-"""HTML extraction with lightweight boilerplate removal."""
+"""Semantic documentation extraction with nested-markup preservation."""
 
 from __future__ import annotations
 
 from dataclasses import dataclass
-from html.parser import HTMLParser
 
-IGNORED_TAGS = {"script", "style", "nav", "header", "footer", "aside", "noscript"}
-BLOCK_TAGS = {"p", "li", "pre", "code", "blockquote"}
-HEADING_TAGS = {"h1", "h2", "h3", "h4", "h5", "h6"}
+from bs4 import BeautifulSoup, Tag
+
+IGNORED_TAGS = ("script", "style", "nav", "header", "footer", "aside", "noscript")
+HEADING_TAGS = frozenset({"h1", "h2", "h3", "h4", "h5", "h6"})
+CONTENT_TAGS = HEADING_TAGS | {"p", "pre", "code", "li", "tr", "blockquote"}
+STRUCTURED_KINDS = {"pre": "code", "code": "code", "li": "list-item", "tr": "table-row"}
 
 
 @dataclass(frozen=True)
@@ -28,71 +30,81 @@ class ExtractedPage:
 
 
 def extract_page(html: str) -> ExtractedPage:
-    parser = DocumentationHTMLParser()
-    parser.feed(html)
-    parser.close()
-    return ExtractedPage(title=parser.title_text, blocks=tuple(parser.blocks))
+    soup = BeautifulSoup(html, "lxml")
+    title = _page_title(soup)
+    _remove_ignored_content(soup)
+    root = _content_root(soup)
+    blocks = tuple(_blocks(root))
+    return ExtractedPage(title=title, blocks=blocks)
 
 
-class DocumentationHTMLParser(HTMLParser):
-    def __init__(self) -> None:
-        super().__init__(convert_charrefs=True)
-        self.blocks: list[ExtractedBlock] = []
-        self.title_text: str | None = None
-        self._ignored_depth = 0
-        self._current_tag: str | None = None
-        self._current_level = 0
-        self._buffer: list[str] = []
-
-    def handle_starttag(self, tag: str, attrs) -> None:  # noqa: ANN001
-        if tag in IGNORED_TAGS:
-            self._ignored_depth += 1
-        self._start_capture(tag)
-
-    def handle_endtag(self, tag: str) -> None:
-        self._finish_capture(tag)
-        if tag in IGNORED_TAGS and self._ignored_depth:
-            self._ignored_depth -= 1
-
-    def handle_data(self, data: str) -> None:
-        if self._ignored_depth or self._current_tag is None:
-            return
-        self._buffer.append(data)
-
-    def _start_capture(self, tag: str) -> None:
-        if self._ignored_depth or tag not in BLOCK_TAGS | HEADING_TAGS | {"title"}:
-            return
-        self._current_tag = tag
-        self._current_level = _heading_level(tag)
-        self._buffer = []
-
-    def _finish_capture(self, tag: str) -> None:
-        if tag != self._current_tag:
-            return
-        self._commit_buffer(tag)
-        self._current_tag = None
-
-    def _commit_buffer(self, tag: str) -> None:
-        text = _clean_text(" ".join(self._buffer))
-        if not text:
-            return
-        self._store_text(tag, text)
-
-    def _store_text(self, tag: str, text: str) -> None:
-        if tag == "title":
-            self.title_text = text
-            return
-        self.blocks.append(_block(tag, self._current_level, text))
+def _page_title(soup: BeautifulSoup) -> str | None:
+    title = soup.title
+    return _normalized_text(title) if title else None
 
 
-def _block(tag: str, level: int, text: str) -> ExtractedBlock:
-    kind = "heading" if tag in HEADING_TAGS else "text"
-    return ExtractedBlock(kind=kind, level=level, text=text)
+def _remove_ignored_content(soup: BeautifulSoup) -> None:
+    for element in soup.find_all(IGNORED_TAGS):
+        element.decompose()
+
+
+def _content_root(soup: BeautifulSoup) -> Tag | BeautifulSoup:
+    root = soup.select_one("main, article, body")
+    return root if root else soup
+
+
+def _blocks(root: Tag | BeautifulSoup):  # noqa: ANN202
+    for element in _outer_elements(root):
+        block = _block(element)
+        if block.text:
+            yield block
+
+
+def _outer_elements(root: Tag | BeautifulSoup):  # noqa: ANN202
+    for element in root.find_all(CONTENT_TAGS):
+        if not _has_semantic_ancestor(element, root):
+            yield element
+
+
+def _has_semantic_ancestor(element: Tag, root: Tag | BeautifulSoup) -> bool:
+    ancestor = element.find_parent(CONTENT_TAGS)
+    return ancestor is not None and ancestor is not root
+
+
+def _block(element: Tag) -> ExtractedBlock:
+    return ExtractedBlock(
+        kind=_block_kind(element.name),
+        level=_heading_level(element.name),
+        text=_block_text(element),
+    )
+
+
+def _block_kind(tag: str) -> str:
+    if tag in HEADING_TAGS:
+        return "heading"
+    return STRUCTURED_KINDS.get(tag, "text")
 
 
 def _heading_level(tag: str) -> int:
     return int(tag[1]) if tag in HEADING_TAGS else 0
 
 
-def _clean_text(text: str) -> str:
-    return " ".join(text.split())
+def _block_text(element: Tag) -> str:
+    if element.name in {"pre", "code"}:
+        return _code_text(element)
+    if element.name == "tr":
+        return _table_row_text(element)
+    return _normalized_text(element)
+
+
+def _code_text(element: Tag) -> str:
+    return element.get_text().strip("\n")
+
+
+def _table_row_text(element: Tag) -> str:
+    cells = element.find_all(("th", "td"), recursive=False)
+    return " | ".join(filter(None, (_normalized_text(cell) for cell in cells)))
+
+
+def _normalized_text(element: Tag) -> str:
+    return " ".join(element.get_text().split())

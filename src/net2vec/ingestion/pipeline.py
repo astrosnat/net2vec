@@ -7,7 +7,7 @@ import logging
 from dataclasses import dataclass
 
 from net2vec.domain.chunks import DocumentSection
-from net2vec.domain.documents import SourceDocument
+from net2vec.domain.documents import IngestionError, SourceDocument
 from net2vec.embeddings.service import EmbeddingService
 from net2vec.ingestion.chunker import ChunkDraft, build_chunks
 from net2vec.ingestion.extractor import extract_page
@@ -38,6 +38,7 @@ class IngestionPipeline:
         exact_url = validate_exact_url(url)
         fetched = self.fetcher.fetch(exact_url)
         page = extract_page(fetched.html)
+        _require_content(page.blocks)
         drafts = build_chunks(page.blocks, source_url=exact_url)
         embeddings = self.embedding_service.embed_texts([draft.full_chunk_text for draft in drafts])
         document = _document(exact_url, page.title, fetched.html, fetched.status_code)
@@ -91,3 +92,8 @@ def _section(
 
 def _hash(text: str) -> str:
     return hashlib.sha256(text.encode("utf-8")).hexdigest()
+
+
+def _require_content(blocks: tuple) -> None:
+    if not blocks:
+        raise IngestionError("URL yielded no meaningful documentation content")

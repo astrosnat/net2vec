@@ -1,0 +1,29 @@
+<!-- Source structure: https://google.github.io/styleguide/go/guide ; retrieved 2026-10-11 -->
+<!doctype html>
+<html>
+  <head><title>Go Style Guide</title></head>
+  <body>
+    <header><a href="/">Google Style Guides</a></header>
+    <nav>Overview | Guide | Decisions | Best practices</nav>
+    <main>
+      <h1>Go Style Guide</h1>
+      <p>Use <code>MixedCaps</code>, including for names such as <a href="#initialisms">URL</a>.</p>
+      <h2>Examples</h2>
+      <p><strong>Good:</strong></p>
+      <pre><code>func loadURL() string {
+    return "https://example.com"
+}</code></pre>
+      <p><strong>Bad:</strong> avoid <code>load_url</code>.</p>
+      <ul>
+        <li>Prefer clarity.</li>
+        <li>Keep <code>initialisms</code> consistent.</li>
+      </ul>
+      <table>
+        <tr><th>Use</th><th>Avoid</th></tr>
+        <tr><td>ServeHTTP</td><td>ServeHttp</td></tr>
+      </table>
+    </main>
+    <footer>Improve this page</footer>
+    <script>track()</script>
+  </body>
+</html>

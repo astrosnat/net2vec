@@ -35,6 +35,7 @@ dev = [
 
 [project.scripts]
 net2vec-ingest = "net2vec.cli.ingest:main"
+net2vec-ingest-corpus = "net2vec.cli.ingest_corpus:main"
 net2vec-configure = "net2vec.cli.configure:main"
 
 [tool.setuptools.packages.find]

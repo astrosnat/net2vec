@@ -1,3 +1,6 @@
+import pytest
+
+from net2vec.domain.documents import IngestionError
 from net2vec.embeddings.client import EmbeddingClient
 from net2vec.embeddings.service import EmbeddingService
 from net2vec.ingestion.fetcher import FetchResult
@@ -36,3 +39,19 @@ def test_ingest_then_refresh_replaces_active_content() -> None:
     assert repo.active_sections(first.document.id) == []
     assert sections[0].heading_path == ("Names",)
     assert sections[0].full_chunk_text == "Initialisms stay consistent."
+
+
+def test_ingest_rejects_page_without_meaningful_content() -> None:
+    fetcher = FakeFetcher()
+    fetcher.html = "<html><nav>Navigation only</nav><script>x()</script></html>"
+    repo = InMemoryDocumentRepository()
+    pipeline = IngestionPipeline(
+        fetcher=fetcher,
+        embedding_service=EmbeddingService(FakeClient(), model="fake", dimensions=3),
+        repository=repo,
+    )
+
+    with pytest.raises(IngestionError, match="no meaningful documentation content"):
+        pipeline.ingest("https://go.dev/doc/effective_go")
+
+    assert repo.count_active_sections() == 0

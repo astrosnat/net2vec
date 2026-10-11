@@ -29,6 +29,10 @@ class SearchResult:
     rank: int
     score: float
     title: str | None = None
+    resolved_url: str | None = None
+    corpus_id: str | None = None
+    manifest_source_id: str | None = None
+    source_classification: str | None = None
 
 
 @dataclass(frozen=True)
@@ -41,6 +45,10 @@ class SearchMatch:
     full_chunk_text: str
     distance: float
     title: str | None = None
+    resolved_url: str | None = None
+    corpus_id: str | None = None
+    manifest_source_id: str | None = None
+    source_classification: str | None = None
 
 
 @dataclass(frozen=True)

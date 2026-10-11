@@ -26,6 +26,10 @@ class IngestionError(Net2VecError):
 class SourceDocument:
     source_url: str
     title: str | None = None
+    resolved_url: str | None = None
+    corpus_id: str | None = None
+    manifest_source_id: str | None = None
+    source_classification: str | None = None
     id: UUID = field(default_factory=uuid4)
     retrieval_status: RetrievalStatus = RetrievalStatus.PENDING
     http_status: int | None = None
@@ -34,6 +38,13 @@ class SourceDocument:
     ingested_at: datetime = field(default_factory=lambda: datetime.now(UTC))
     refreshed_at: datetime = field(default_factory=lambda: datetime.now(UTC))
     error_message: str | None = None
+
+    def __post_init__(self) -> None:
+        _validate_provenance(
+            self.corpus_id,
+            self.manifest_source_id,
+            self.source_classification,
+        )
 
     def mark_succeeded(self, title: str | None, content_hash: str, http_status: int | None) -> None:
         self.title = title
@@ -48,3 +59,13 @@ class SourceDocument:
         self.error_message = message
         self.retrieval_status = RetrievalStatus.FAILED
         self.refreshed_at = datetime.now(UTC)
+
+
+def _validate_provenance(
+    corpus_id: str | None,
+    source_id: str | None,
+    classification: str | None,
+) -> None:
+    provenance = (corpus_id, source_id, classification)
+    if None in provenance and provenance != (None, None, None):
+        raise ValueError("corpus provenance must be all present or all absent")

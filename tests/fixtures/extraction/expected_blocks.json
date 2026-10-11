@@ -1,0 +1,29 @@
+{
+  "google_style.html": {
+    "title": "Go Style Guide",
+    "blocks": [
+      {"kind": "heading", "level": 1, "text": "Go Style Guide"},
+      {"kind": "text", "level": 0, "text": "Use MixedCaps, including for names such as URL."},
+      {"kind": "heading", "level": 2, "text": "Examples"},
+      {"kind": "text", "level": 0, "text": "Good:"},
+      {"kind": "code", "level": 0, "text": "func loadURL() string {\n    return \"https://example.com\"\n}"},
+      {"kind": "text", "level": 0, "text": "Bad: avoid load_url."},
+      {"kind": "list-item", "level": 0, "text": "Prefer clarity."},
+      {"kind": "list-item", "level": 0, "text": "Keep initialisms consistent."},
+      {"kind": "table-row", "level": 0, "text": "Use | Avoid"},
+      {"kind": "table-row", "level": 0, "text": "ServeHTTP | ServeHttp"}
+    ]
+  },
+  "go_dev_guide.html": {
+    "title": "Go Test Comments",
+    "blocks": [
+      {"kind": "heading", "level": 1, "text": "Go Test Comments"},
+      {"kind": "text", "level": 0, "text": "Tests should explain failures clearly."},
+      {"kind": "heading", "level": 2, "text": "Got before want"},
+      {"kind": "text", "level": 0, "text": "Report got before want in failure messages."},
+      {"kind": "code", "level": 0, "text": "if got != want {\n\tt.Errorf(\"Parse() = %v, want %v\", got, want)\n}"},
+      {"kind": "list-item", "level": 0, "text": "Identify the function."},
+      {"kind": "list-item", "level": 0, "text": "Identify the input."}
+    ]
+  }
+}

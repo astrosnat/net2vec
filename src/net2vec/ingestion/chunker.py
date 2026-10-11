@@ -41,14 +41,14 @@ class ChunkState:
     def __init__(self, max_words: int) -> None:
         self.max_words = max_words
         self.heading_path: list[str] = []
-        self.pending: list[str] = []
+        self.pending: list[BlockLike] = []
         self.chunks: list[ChunkDraft] = []
 
     def accept(self, block: BlockLike) -> None:
         if block.kind == "heading":
             self._set_heading(block.level, block.text)
             return
-        self._add_text(block.text)
+        self._add_text(block)
 
     def finish(self) -> list[ChunkDraft]:
         self._flush()
@@ -59,13 +59,13 @@ class ChunkState:
         self.heading_path = self.heading_path[: max(level - 1, 0)]
         self.heading_path.append(text)
 
-    def _add_text(self, text: str) -> None:
-        if _word_count(" ".join([*self.pending, text])) > self.max_words:
+    def _add_text(self, block: BlockLike) -> None:
+        if _word_count(_join_blocks([*self.pending, block])) > self.max_words:
             self._flush()
-        self.pending.append(text)
+        self.pending.append(block)
 
     def _flush(self) -> None:
-        full_text = " ".join(self.pending).strip()
+        full_text = _join_blocks(self.pending).strip()
         if not full_text:
             return
         self.chunks.append(_chunk(len(self.chunks), tuple(self.heading_path), full_text))
@@ -103,3 +103,20 @@ def _excerpt(text: str, max_chars: int = 280) -> str:
 
 def _word_count(text: str) -> int:
     return len(text.split())
+
+
+def _join_blocks(blocks: list[BlockLike]) -> str:
+    rendered = ""
+    previous_kind = None
+    for block in blocks:
+        rendered += _block_separator(previous_kind, block.kind) + block.text
+        previous_kind = block.kind
+    return rendered
+
+
+def _block_separator(previous_kind: str | None, kind: str) -> str:
+    if previous_kind is None:
+        return ""
+    structured = {"code", "list-item", "table-row"}
+    separators = {True: "\n\n", False: " "}
+    return separators[bool({previous_kind, kind} & structured)]

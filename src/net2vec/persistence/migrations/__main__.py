@@ -12,7 +12,10 @@ from sqlalchemy import create_engine
 
 from net2vec.config.settings import Settings
 
-MIGRATION_MODULE = "net2vec.persistence.migrations.versions.0001_enable_pgvector"
+MIGRATION_MODULES = (
+    "net2vec.persistence.migrations.versions.0001_enable_pgvector",
+    "net2vec.persistence.migrations.versions.0002_add_corpus_provenance",
+)
 
 
 def main() -> None:
@@ -31,7 +34,11 @@ def _run(command: str) -> int:
 
 
 def _run_command(command: str, operations: Operations) -> None:
-    migration = _migration_module()
+    for migration in _migration_modules(command):
+        _run_migration(command, operations, migration)
+
+
+def _run_migration(command: str, operations: Operations, migration: ModuleType) -> None:
     original_op = migration.op
     migration.op = operations
     try:
@@ -40,8 +47,9 @@ def _run_command(command: str, operations: Operations) -> None:
         migration.op = original_op
 
 
-def _migration_module() -> ModuleType:
-    return importlib.import_module(MIGRATION_MODULE)
+def _migration_modules(command: str) -> tuple[ModuleType, ...]:
+    names = MIGRATION_MODULES if command == "upgrade" else tuple(reversed(MIGRATION_MODULES))
+    return tuple(importlib.import_module(name) for name in names)
 
 
 if __name__ == "__main__":

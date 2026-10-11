@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://net2vec.local/contracts/corpus-manifest.schema.json",
+  "title": "net2vec Corpus Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "corpus_id", "title", "sources"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "corpus_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "title": {"type": "string", "minLength": 1},
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/source"}
+    }
+  },
+  "$defs": {
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "url", "title", "classification", "enabled"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+        },
+        "url": {
+          "type": "string",
+          "format": "uri",
+          "pattern": "^https://"
+        },
+        "title": {"type": "string", "minLength": 1},
+        "classification": {
+          "enum": [
+            "overview",
+            "canonical",
+            "normative",
+            "best-practice",
+            "baseline",
+            "review",
+            "testing"
+          ]
+        },
+        "enabled": {"type": "boolean"}
+      }
+    }
+  }
+}
