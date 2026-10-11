@@ -72,11 +72,29 @@ def test_runner_passes_stable_provenance_to_ingestor() -> None:
     assert values == ("go-style", "guide", "canonical")
 
 
-def test_runner_sanitizes_unexpected_exception_messages() -> None:
+def test_runner_sanitizes_unexpected_exception_messages(caplog) -> None:  # noqa: ANN001
     ingestor = FakeIngestor()
     manifest = CorpusManifest(1, "go-style", "Go", (_source("secret", "secret"),))
 
-    run = CorpusIngestionService(ingestor).ingest(manifest)
+    with caplog.at_level("DEBUG", logger="net2vec.ingestion.corpus"):
+        run = CorpusIngestionService(ingestor).ingest(manifest)
 
     assert run.outcomes[0].message == "RuntimeError during source ingestion"
     assert "hunter2" not in run.outcomes[0].message
+    assert "password=hunter2" in caplog.text
+    assert "Traceback" in caplog.text
+
+
+def test_runner_reports_each_outcome_as_it_completes() -> None:
+    manifest = CorpusManifest(
+        1,
+        "go-style",
+        "Go",
+        (_source("one", "one"), _source("two", "failed")),
+    )
+    reported = []
+
+    run = CorpusIngestionService(FakeIngestor()).ingest(manifest, reported.append)
+
+    assert tuple(outcome.source_id for outcome in reported) == ("one", "two")
+    assert tuple(reported) == run.outcomes

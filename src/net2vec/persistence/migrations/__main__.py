@@ -8,9 +8,9 @@ from types import ModuleType
 
 from alembic.migration import MigrationContext
 from alembic.operations import Operations
-from sqlalchemy import create_engine
 
 from net2vec.config.settings import Settings
+from net2vec.persistence.database import create_database_engine
 
 MIGRATION_MODULES = (
     "net2vec.persistence.migrations.versions.0001_enable_pgvector",
@@ -26,7 +26,7 @@ def main() -> None:
 
 
 def _run(command: str) -> int:
-    engine = create_engine(Settings.from_env().database_url)
+    engine = create_database_engine(Settings.from_env().database_url)
     with engine.begin() as connection:
         context = MigrationContext.configure(connection)
         _run_command(command, Operations(context))
